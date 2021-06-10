@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace PASR.Tests.Leads
+namespace PASR.Tests.Teams
 {
     public class TeamAppService_Tests : PASRTestBase
     {

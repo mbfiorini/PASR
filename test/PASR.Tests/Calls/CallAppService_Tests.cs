@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PASR.Leads;
-using PASR.Leads.Dto;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -9,22 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace PASR.Tests.Leads
+namespace PASR.Tests.Calls
 {
-    public class LeadAppService_Tests : PASRTestBase
+    public class CallAppService_Tests : PASRTestBase
     {
-        private readonly ILeadAppService _leadAppService;
+        private readonly ICallAppService _callAppService;
 
-        public LeadAppService_Tests()
+        public CallAppService_Tests()
         {
-            _leadAppService = Resolve<ILeadAppService>();
+            _callAppService = Resolve<ILeadAppService>();
         }
 
         [Fact]
         public async Task GetLeads_Test()
         {
             // Act
-            var output = await _leadAppService.GetAllAsync(new PagedLeadResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
+            var output = await _callAppService.GetAllAsync(new PagedCallResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
 
             // Assert
             output.Items.Count.ShouldBeGreaterThan(0);
@@ -45,7 +43,7 @@ namespace PASR.Tests.Leads
             });
 
             // Act
-            await _leadAppService.CreateAsync(
+            await _callAppService.CreateAsync(
                 new CreateLeadDto
                 {
                     Name = "Matheus",
