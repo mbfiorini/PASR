@@ -43,7 +43,7 @@ namespace PASR
             // Use database for language management
             Configuration.Modules.Zero().LanguageManagement.EnableDbLocalization();
 
-            //Configura todos os ApplicationServices para serem controllers (com EndPoints para as requisições)
+            //Configura todos os ApplicationServices para serem controllers (com EndPoints para as requisições AJAX ClientSide)
             Configuration.Modules.AbpAspNetCore()
                  .CreateControllersForAppServices(
                      typeof(PASRApplicationModule).GetAssembly()

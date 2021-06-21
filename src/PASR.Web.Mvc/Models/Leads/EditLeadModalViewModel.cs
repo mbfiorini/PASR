@@ -10,5 +10,6 @@ namespace PASR.Web.Models.Leads
     [AutoMapFrom(typeof(GetLeadForEditOutput))]
     public class EditLeadModalViewModel : GetLeadForEditOutput
     {
+        
     }
 }

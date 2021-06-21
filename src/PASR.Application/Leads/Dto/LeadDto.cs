@@ -25,6 +25,14 @@ namespace PASR.Leads.Dto
         [StringLength(14)]
         public string PhoneNumber { get; set; }
 
+        [Required]
+        [StringLength(PASRConsts.MaxIdentityCodeLength)]
+        public string IdentityCode { get; set; }
+
+        [Required]
+        [StringLength(PASRConsts.MaxEmailAddressLength)]
+        public string EmailAddress { get; set; }
+
         [MaxLength]
         public string LeadNotes { get; set; }
 

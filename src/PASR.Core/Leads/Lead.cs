@@ -22,19 +22,23 @@ namespace PASR.Leads
             Name = name;
             LastName = lastName;
             PhoneNumber = phoneNumber;
-            Cgc = cgc;
+            IdentityCode = cgc;
         }
 
         [Required]
-        [StringLength(14)]
-        public string Cgc { get; set; }
+        [StringLength(PASRConsts.MaxIdentityCodeLength)]
+        public string IdentityCode { get; set; }
 
         [Required]
-        [StringLength(256)]
+        [StringLength(PASRConsts.MaxEmailAddressLength)]
+        public string EmailAddress { get; set; }
+
+        [Required]
+        [StringLength(PASRConsts.MaxNamesLength)]
         public string Name { get; set; }
         
         [Required]
-        [StringLength(256)]
+        [StringLength(PASRConsts.MaxNamesLength)]
         public string LastName { get; set; }
         
         public User AssignedUser { get; set; }

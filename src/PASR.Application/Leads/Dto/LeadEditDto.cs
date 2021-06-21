@@ -21,6 +21,14 @@ namespace PASR.Leads.Dto
         public string LastName { get; set; }
 
         [Required]
+        [StringLength(PASRConsts.MaxIdentityCodeLength)]
+        public string IdentityCode { get; set; }
+
+        [Required]
+        [StringLength(PASRConsts.MaxEmailAddressLength)]
+        public string EmailAddress { get; set; }
+
+        [Required]
         [StringLength(14)]
         public string PhoneNumber { get; set; }
 
@@ -29,8 +37,11 @@ namespace PASR.Leads.Dto
 
         public UserDto AssignedUser { get; set; }
 
+        [Required]
         public Lead.LeadPriority Priority { get; set; }
 
-        public ICollection<Address> Addresses { get; set; }
+        public ICollection<AddressDto> Addresses { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

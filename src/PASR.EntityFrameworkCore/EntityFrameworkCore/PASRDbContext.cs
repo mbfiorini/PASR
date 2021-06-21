@@ -59,7 +59,7 @@ namespace PASR.EntityFrameworkCore
 
                 l.Property(l => l.Priority).HasDefaultValue(Lead.LeadPriority.Normal);
 
-                l.HasIndex(l => l.Cgc).IsUnique();
+                l.HasIndex(l => l.IdentityCode).IsUnique();
 
                 l.OwnsMany("Addresses", l => l.Addresses,
                           a => 

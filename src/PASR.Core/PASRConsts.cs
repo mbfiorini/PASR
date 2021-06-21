@@ -8,5 +8,11 @@
 
         public const bool MultiTenancyEnabled = false;
 
+        public const int MaxNamesLength = 256;
+
+        public const int MaxEmailAddressLength = 256;
+
+        public const int MaxIdentityCodeLength = 14;
+
     }
 }

@@ -19,7 +19,8 @@ namespace PASR.Web.Startup
                         L("HomePage"),
                         url: "",
                         icon: "fas fa-home",
-                        requiresAuthentication: true
+                        requiresAuthentication: true,
+                        order: 0
                     )
                 ).AddItem(
                     new MenuItemDefinition(
@@ -27,7 +28,8 @@ namespace PASR.Web.Startup
                         L("Tenants"),
                         url: "Tenants",
                         icon: "fas fa-building",
-                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Tenants)
+                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Tenants),
+                        order: 1
                     )
                 ).AddItem(
                     new MenuItemDefinition(
@@ -35,7 +37,8 @@ namespace PASR.Web.Startup
                         L("Users"),
                         url: "Users",
                         icon: "fas fa-users",
-                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users)
+                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users),
+                        order: 2
                     )
                 ).AddItem(
                     new MenuItemDefinition(
@@ -43,30 +46,31 @@ namespace PASR.Web.Startup
                         L("Roles"),
                         url: "Roles",
                         icon: "fas fa-theater-masks",
-                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
-                            )
-                )
-                .AddItem(
-                    new MenuItemDefinition(
-                        PageNames.About,
-                        L("About"),
-                        url: "About",
-                        icon: "fas fa-info-circle"
+                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles),
+                        order: 3
                     )
-                )
-                .AddItem(
+                ).AddItem(
                     new MenuItemDefinition(
                         PageNames.Leads,
                         L("Leads"),
                         url: "Lead",
-                        icon: "fas fa-info-circle"
+                        icon: "fas fa-info-circle",
+                        order: 4
                     )
-                ).
-                AddItem( // Menu items below is just for demonstration!
+                ).AddItem(
+                    new MenuItemDefinition(
+                        PageNames.About,
+                        L("About"),
+                        url: "About",
+                        icon: "fas fa-info-circle",
+                        order: 5
+                    )
+                ).AddItem( // Menu items below is just for demonstration!
                     new MenuItemDefinition(
                         "MultiLevelMenu",
                         L("MultiLevelMenu"),
-                        icon: "fas fa-circle"
+                        icon: "fas fa-circle",
+                        order: 6
                     ).AddItem(
                         new MenuItemDefinition(
                             "AspNetBoilerplate",

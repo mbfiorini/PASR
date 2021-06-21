@@ -17,9 +17,10 @@
                 contentType: 'application/x-www-form-urlencoded',
                 url: _$form.attr('action'),
                 data: _$form.serialize()
-            }).done(function (data) {
-                window.location.href = data.TargetUrl;
-            })
+            }).done(function (data) {                
+                console.log(data)
+                window.location.href = abp.appPath; //HomePage
+            }).always(() => { abp.ui.clearBusy($('body'));})
         );
     });
 })();

@@ -3,6 +3,7 @@ using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.Runtime.Validation;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using PASR.Authorization;
@@ -28,8 +29,8 @@ namespace PASR.Leads
             : base(repository)
         {
             _userStore = userStore;
-            DeletePermissionName = "Delete.Lead";
-            UpdatePermissionName = "Update.Lead";
+            DeletePermissionName = PermissionNames.Delete_Leads;
+            UpdatePermissionName = PermissionNames.Update_Leads;
         }
 
         public override async Task<LeadDto> CreateAsync(CreateLeadDto input)
@@ -47,13 +48,12 @@ namespace PASR.Leads
         {
             var Leads = await Repository
                 .GetAllIncluding(l => l.AssignedUser)
-                .WhereIf(input.UserId != 0, l => l.AssignedUser.Id == input.UserId)
+                .WhereIf(input.UserId > 0, l => l.AssignedUser.Id == input.UserId)
                 .ToListAsync();
 
             return new ListResultDto<LeadListOutputDto>(ObjectMapper.Map<List<LeadListOutputDto>>(Leads));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Leads)]
         public override async Task<LeadDto> UpdateAsync(LeadDto input)
         {
             CheckUpdatePermission();
@@ -81,13 +81,28 @@ namespace PASR.Leads
             await Repository.DeleteAsync(lead);
         }
 
+        public override async Task<PagedResultDto<LeadDto>> GetAllAsync(PagedLeadResultRequestDto input)
+        {
+            var query = CreateFilteredQuery(input);
+
+            var queryResult = await query.ToListAsync<Lead>();
+
+            var items = ObjectMapper.Map<IReadOnlyList<LeadDto>>(queryResult);
+
+            return await Task.Run(() => new PagedResultDto<LeadDto>(items.Count, items));
+
+            return await base.GetAllAsync(input);
+
+        }
+
         protected override IQueryable<Lead> CreateFilteredQuery(PagedLeadResultRequestDto input)
         {
             return Repository.GetAllIncluding(l => l.AssignedUser)
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Keyword), 
                 l => l.Name.Contains(input.Keyword)
                      || l.LastName.Contains(input.Keyword)
-                     || l.AssignedUser.FullName.Contains(input.Keyword)
+                     || l.AssignedUser.Name.Contains(input.Keyword)
+                     || l.AssignedUser.Surname.Contains(input.Keyword)
                 );
         }
 
@@ -110,8 +125,8 @@ namespace PASR.Leads
 
             return new GetLeadForEditOutput
             {
-                LeadEditDto = leadEditDto,
-                SDRUsers = SDRsDto
+                Lead = leadEditDto,
+                Users = SDRsDto
             };
         }
     }

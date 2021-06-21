@@ -1,26 +1,29 @@
 ﻿(function ($) {
-    var _roleService = abp.services.app.role,
+    var _leadService = abp.services.app.lead,
         l = abp.localization.getSource('PASR'),
-        _$modal = $('#RoleCreateModal'),
+        _$modal = $('#LeadCreateModal'),
         _$form = _$modal.find('form'),
-        _$table = $('#RolesTable');
+        _$table = $('#LeadsTable');
 
-    var _$rolesTable = _$table.DataTable({
-        paging: true,
+    var priorityList = ["Max","Normal","Min"];
+
+    var _$leadsTable = _$table.DataTable({
+        processing: true,
         serverSide: true,
         ajax: function (data, callback, settings) {
-            var filter = $('#RolesSearchForm').serializeFormToObject(true);
+            var filter = $('#LeadsSearchForm').serializeFormToObject(true);
             filter.maxResultCount = data.length;
             filter.skipCount = data.start;
 
             abp.ui.setBusy(_$table);
-            _roleService.getAll(filter).done(function (result) {
+            _leadService.getAll(filter).done(function (result) {
                 callback({
                     recordsTotal: result.totalCount,
                     recordsFiltered: result.totalCount,
                     data: result.items
                 });
-            }).always(function () {
+            }).always(function (data) {
+                //console.log(data);
                 abp.ui.clearBusy(_$table);
             });
         },
@@ -28,7 +31,7 @@
             {
                 name: 'refresh',
                 text: '<i class="fas fa-redo-alt"></i>',
-                action: () => _$rolesTable.draw(false)
+                action: () => _$leadsTable.draw(false)
             }
         ],
         responsive: {
@@ -45,25 +48,44 @@
             {
                 targets: 1,
                 data: 'name',
-                sortable: false
+                sortable: true
             },
             {
                 targets: 2,
-                data: 'displayName',
-                sortable: false
+                data: 'lastName',
+                sortable: true
+
             },
             {
                 targets: 3,
+                data: 'phoneNumber',
+                sortable: true
+
+            },
+            {
+                targets: 4,
+                data: 'emailAddress',
+                sortable: true
+
+            },
+            {
+                targets: 5,
+                data:'priority',
+                sortable: true
+
+            },
+            {
+                targets: 6,
                 data: null,
                 sortable: false,
                 autoWidth: false,
                 defaultContent: '',
                 render: (data, type, row, meta) => {
                     return [
-                        `   <button type="button" class="btn btn-sm bg-secondary edit-role" data-role-id="${row.id}" data-toggle="modal" data-target="#RoleEditModal">`,
+                        `   <button type="button" class="btn btn-sm bg-secondary edit-lead" data-lead-id="${row.id}" data-toggle="modal" data-target="#LeadEditModal">`,
                         `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-danger delete-role" data-role-id="${row.id}" data-role-name="${row.name}">`,
+                        `   <button type="button" class="btn btn-sm bg-danger delete-lead" data-lead-id="${row.id}" data-lead-name="${row.name}">`,
                         `       <i class="fas fa-trash"></i> ${l('Delete')}`,
                         '   </button>',
                     ].join('');
@@ -75,73 +97,70 @@
     _$form.find('.save-button').on('click', (e) => {
         e.preventDefault();
 
+        _$form.validate({ debug: true });
+
         if (!_$form.valid()) {
             return;
         }
 
-        var role = _$form.serializeFormToObject();
-        role.grantedPermissions = [];
-        var _$permissionCheckboxes = _$form[0].querySelectorAll("input[name='permission']:checked");
-        if (_$permissionCheckboxes) {
-            for (var permissionIndex = 0; permissionIndex < _$permissionCheckboxes.length; permissionIndex++) {
-                var _$permissionCheckbox = $(_$permissionCheckboxes[permissionIndex]);
-                role.grantedPermissions.push(_$permissionCheckbox.val());
-            }
-        }
+        var lead = _$form.serializeFormToObject();        
 
         abp.ui.setBusy(_$modal);
-        _roleService
-            .create(role)
+        _leadService
+            .create(lead)
             .done(function () {
                 _$modal.modal('hide');
                 _$form[0].reset();
                 abp.notify.info(l('SavedSuccessfully'));
-                _$rolesTable.ajax.reload();
+                _$leadsTable.ajax.reload();
             })
             .always(function () {
                 abp.ui.clearBusy(_$modal);
             });
     });
 
-    $(document).on('click', '.delete-role', function () {
-        var roleId = $(this).attr("data-role-id");
-        var roleName = $(this).attr('data-role-name');
+    $(document).on('click', '.delete-lead', function () {
+        var leadId = $(this).attr("data-lead-id");
+        var leadName = $(this).attr('data-lead-name');
 
-        deleteRole(roleId, roleName);
+        deleteLead(leadId, leadName);
     });
 
-    $(document).on('click', '.edit-role', function (e) {
-        var roleId = $(this).attr("data-role-id");
+    $(document).on('click', '.edit-lead', function (e) {
+        
+        var leadId = $(this).attr("data-lead-id");
 
         e.preventDefault();
         abp.ajax({
-            url: abp.appPath + 'Roles/EditModal?roleId=' + roleId,
+            url: abp.appPath + 'Lead/EditModal?LeadId=' + leadId,
             type: 'POST',
             dataType: 'html',
             success: function (content) {
-                $('#RoleEditModal div.modal-content').html(content);
+                $('#LeadEditModal div.modal-content').html(content);
             },
-            error: function (e) { }
+            error: function (e) { 
+                abp.message.error("Erro ao obter HTML através do Serviço!");
+            }
         })
     });
 
-    abp.event.on('role.edited', (data) => {
-        _$rolesTable.ajax.reload();
+    abp.event.on('lead.edited', (data) => {
+        _$leadsTable.ajax.reload();
     });
 
-    function deleteRole(roleId, roleName) {
+    function deleteLead(leadId, leadName) {
         abp.message.confirm(
             abp.utils.formatString(
                 l('AreYouSureWantToDelete'),
-                roleName),
+                leadName),
             null,
             (isConfirmed) => {
                 if (isConfirmed) {
-                    _roleService.delete({
-                        id: roleId
+                    _leadService.delete({
+                        id: leadId
                     }).done(() => {
                         abp.notify.info(l('SuccessfullyDeleted'));
-                        _$rolesTable.ajax.reload();
+                        _$leadsTable.ajax.reload();
                     });
                 }
             }
@@ -155,12 +174,12 @@
     });
 
     $('.btn-search').on('click', (e) => {
-        _$rolesTable.ajax.reload();
+        _$leadsTable.ajax.reload();
     });
 
     $('.txt-search').on('keypress', (e) => {
         if (e.which == 13) {
-            _$rolesTable.ajax.reload();
+            _$leadsTable.ajax.reload();
             return false;
         }
     });

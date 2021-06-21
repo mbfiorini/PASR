@@ -77,6 +77,7 @@ namespace PASR.EntityFrameworkCore.Seed.Host
                     Name = "Matheus",
                     Surname = "Fiorini",
                     EmailAddress = "matheus.bf.dosanjos@gmail.com",
+                    PhoneNumber = "(11)99890-8899",
                     IsEmailConfirmed = true,
                     IsActive = true
                 };

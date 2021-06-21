@@ -23,11 +23,11 @@ namespace PASR.Teams
         }
 
         [Required]
-        [StringLength(30)]
+        [StringLength(PASRConsts.MaxNamesLength)]
         public string TeamName { get; set; }
         
         [Required]
-        [StringLength(200)]
+        [StringLength(1000)]
         public string TeamDescription { get; set; }
 
         public ICollection<User> Users { get; set; }

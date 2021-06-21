@@ -60,6 +60,7 @@
         }
     });
 
+
     function convertToCamelCasedObject(obj) {
         var newObj, origKey, newKey, value;
         if (obj instanceof Array) {

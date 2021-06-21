@@ -1,0 +1,59 @@
+﻿@using PASR.Web.Models.Common.Modals
+@using PASR.Web.Models.Leads
+@model EditLeadModalViewModel
+@{
+    Layout = null;
+}
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditLead")))
+<form name="LeadEditForm" role="form" class="form-horizontal">
+    <input type="hidden" asp-for="@Model.Lead.Id" />
+    <div class="modal-body">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" role="tab" href="#edit-lead-details">@L("LeadDetails")</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" role="tab" href="#edit-lead-addresses">@L("Addressess")</a>
+            </li>
+        </ul>
+        <div class="tab-content mt-4">
+            <div role="tabpanel" class="tab-pane container active" id="edit-lead-details">
+                <div class="form-group row required">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.Name">@L("Name")</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" asp-for="@Model.Lead.Name">
+                    </div>
+                </div>
+                <div class="form-group row required">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.IdentityCode">@L("IdentityCode")</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" asp-for="@Model.Lead.IdentityCode">@L("IdentityCode")>
+                    </div>
+                </div>
+                <div class="form-group row required">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.EmailAddress">@L("EmailAddress")</label>
+                    <div class="col-md-9">
+                        <input asp-for="@Model.Lead.EmailAddress" type="email" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.IsActive">@L("IsActive")</label>
+                    <div class="col-md-9">
+                        <input id="IsActive" type="checkbox" asp-for="@Model.Lead.IsActive" value="@Model.Lead.IsActive" />
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane container" id="edit-lead-addresses">
+                <div class="row">
+                    @foreach (var address in Model.Lead.Addresses)
+                    {
+                        <partial name="_AddressPanel" model="address" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/Leads/_EditModal.js" asp-append-version="true"></script>

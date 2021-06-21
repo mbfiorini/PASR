@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PASR.EntityFrameworkCore;
 
 namespace PASR.Migrations
 {
     [DbContext(typeof(PASRDbContext))]
-    partial class PASRDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210613194020_PASR_Initial_3")]
+    partial class PASR_Initial_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1486,6 +1488,7 @@ namespace PASR.Migrations
                         .HasColumnType("nvarchar(328)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 

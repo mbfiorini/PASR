@@ -17,6 +17,7 @@ namespace PASR.Web.Resources
         public WebResourceManager(IWebHostEnvironment environment)
         {
             _environment = environment;
+            _scriptUrls = new List<string>();
         }
 
         public void AddScript(string url, bool addMinifiedOnProd = true)

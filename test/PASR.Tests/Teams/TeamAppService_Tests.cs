@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PASR.Leads;
-using PASR.Leads.Dto;
 using PASR.Teams;
+using PASR.Teams.Dto;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace PASR.Tests.Teams
         }
 
         [Fact]
-        public async Task GetLeads_Test()
+        public async Task GetTeams_Test()
         {
             // Act
             var output = await _teamAppService.GetAllAsync(new PagedTeamResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
@@ -40,17 +39,13 @@ namespace PASR.Tests.Teams
             await _teamAppService.CreateAsync(
                 new CreateTeamDto
                 {
-                    Name = "Matheus",
-                    LastName = "dos Anjos",
-                    Cgc = "48291929840",
-                    Addresses = AddressList,
-                    PhoneNumber = "11998908899"
+                    TeamName = "TestTeam"
 
                 });
 
             await UsingDbContextAsync(async context =>
             {
-                var matheusDosAnjos = await context.Leads.FirstOrDefaultAsync(l => l.Cgc == "48291929840");
+                var matheusDosAnjos = await context.Leads.FirstOrDefaultAsync(l => l.IdentityCode == "48291929840");
                 matheusDosAnjos.ShouldNotBeNull();
             });
         }

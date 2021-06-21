@@ -24,7 +24,7 @@ namespace PASR.Tests.Leads
         public async Task GetLeads_Test()
         {
             // Act
-            var output = await _leadAppService.GetAllAsync(new PagedLeadResultRequestDto { MaxResultCount = 20, SkipCount = 0 });
+            var output = await _leadAppService.GetAllAsync(new PagedLeadResultRequestDto { MaxResultCount = 20, SkipCount = 0, Keyword = "try" });
 
             // Assert
             output.Items.Count.ShouldBeGreaterThan(0);
@@ -33,16 +33,17 @@ namespace PASR.Tests.Leads
         [Fact]
         public async Task CreateLead_Test()
         {
-            var AddressList = new List<AddressDto>();
-
-            AddressList.Add(new AddressDto
+            var AddressList = new List<AddressDto>
             {
-                FederalUnity = "SP",
-                City = "Jundiaí",
-                District = "Vila Rami",
-                Number = "50",
-                Street = "Rua Sem Saída"
-            });
+                new AddressDto
+                {
+                    FederalUnity = "SP",
+                    City = "Jundiaí",
+                    District = "Vila Rami",
+                    Number = "50",
+                    Street = "Rua Sem Saída"
+                }
+            };
 
             // Act
             await _leadAppService.CreateAsync(
@@ -50,15 +51,16 @@ namespace PASR.Tests.Leads
                 {
                     Name = "Matheus",
                     LastName = "dos Anjos",
-                    Cgc = "48291929840",
+                    IdentityCode = "48291929840",
+                    EmailAddress = "matheus.bf.dosanjos@gmail.com",
                     Addresses = AddressList,
-                    PhoneNumber = "11998908899"
-
+                    PhoneNumber = "11998908899",
+                    Priority = Lead.LeadPriority.Min
                 });
 
             await UsingDbContextAsync(async context =>
             {
-                var matheusDosAnjos = await context.Leads.FirstOrDefaultAsync(l => l.Cgc == "48291929840");
+                var matheusDosAnjos = await context.Leads.FirstOrDefaultAsync(l => l.IdentityCode == "48291929840");
                 matheusDosAnjos.ShouldNotBeNull();
             });
         }

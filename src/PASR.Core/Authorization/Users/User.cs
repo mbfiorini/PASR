@@ -12,10 +12,7 @@ namespace PASR.Authorization.Users
 {
     public class User : AbpUser<User>
     {
-        public const string DefaultPassword = "pars1234";
-
-        [Required]
-        public override string PhoneNumber { get; set; }
+        public const string DefaultPassword = "pasr1234";
 
         public ICollection<Call> Calls { get; set; }
 
@@ -23,7 +20,7 @@ namespace PASR.Authorization.Users
 
         public Address Address { get; set; }
 
-        public ICollection<Team> Teams { get; set; }   
+        public ICollection<Team> Teams { get; set; } 
 
         public static string CreateRandomPassword()
         {
@@ -39,6 +36,7 @@ namespace PASR.Authorization.Users
                 Name = AdminUserName,
                 Surname = AdminUserName,
                 EmailAddress = emailAddress,
+                PhoneNumber = "(11)99999-9999",
                 Roles = new List<UserRole>()
             };
 

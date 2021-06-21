@@ -31,7 +31,6 @@ namespace PASR.EntityFrameworkCore.Seed.Tenants
         private void CreateRolesAndUsers()
         {
             // Admin role
-
             var adminRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.Admin);
             if (adminRole == null)
             {
@@ -53,6 +52,7 @@ namespace PASR.EntityFrameworkCore.Seed.Tenants
                             !grantedPermissions.Contains(p.Name))
                 .ToList();
 
+            //Populate the Abp.Permissions Table (RolePermissionSetting is used in "Discriminator" Column)
             if (permissions.Any())
             {
                 _context.Permissions.AddRange(

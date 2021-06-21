@@ -11,9 +11,9 @@ namespace PASR.Leads.Dto
 {
     public class GetLeadForEditOutput
     {
-        public LeadEditDto LeadEditDto { get; set; }
+        public LeadEditDto Lead { get; set; }
 
-        public ListResultDto<UserDto> SDRUsers { get; set; }
+        public ListResultDto<UserDto> Users { get; set; }
 
     }
 }

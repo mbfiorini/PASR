@@ -1,6 +1,4 @@
-﻿using Abp.Application.Services.Dto;
-using Abp.AutoMapper;
-using PASR.Goals.Dto;
+﻿using PASR.Goals.Dto;
 using PASR.Users.Dto;
 using System;
 using System.Collections.Generic;
@@ -11,19 +9,17 @@ using System.Threading.Tasks;
 
 namespace PASR.Teams.Dto
 {
-    [AutoMap(typeof(Team))]
-    public class TeamDto : EntityDto
+    public class CreateTeamDto
     {
         [Required]
-        [StringLength(PASRConsts.MaxNamesLength)]
+        [StringLength(30)]
         public string TeamName { get; set; }
 
         [Required]
         [StringLength(200)]
         public string TeamDescription { get; set; }
 
-        public IList<UserDto> Users { get; set; }
-
         public GoalDto Goal { get; set; }
+
     }
 }

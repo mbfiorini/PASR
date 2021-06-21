@@ -17,7 +17,7 @@ namespace PASR.Web.Startup
         {
             _env = env;
             _appConfiguration = env.GetAppConfiguration();
-            //WebCoreModule depends on EFCore Module, thus we can inject EFCore Module into this one
+            //WebCoreModule depends on EFCore Module, thus we can inject EFCore Module into this one and decide if DBSeed Actually is going to happen
             entityFrameworkModule.SkipDbSeed = _appConfiguration.GetSection("App").GetValue<bool>("skipDbSeed");
         }
 

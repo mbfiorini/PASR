@@ -10,7 +10,7 @@
     <text name="ThereIsNoTenantDefinedWithName{0}" value="Não há Tenant definido com o nome {0}" />
     <text name="TenantIsNotActive" value="Tenant {0} não está ativo." />
     <text name="UserIsNotActiveAndCanNotLogin" value="Usuário {0} não está ativo e não pode logar." />
-    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Seu email não foi confirmado. Você não pode fazer login.</text>
+    <text name="UserEmailIsNotConfirmedAndCanNotLogin" value="Seu email não foi confirmado. Você não pode fazer login." />
     <text name="UserLockedOutMessage">Usuário bloqueado. Por favor, tente mais tarde.</text>
     <text name="PleaseEnterLoginInformation" value="Por favor insira as informações de login" />
     <text name="TenancyName" value="Nome da Tenancy" />
