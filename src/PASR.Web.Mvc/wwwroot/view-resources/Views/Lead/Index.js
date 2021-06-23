@@ -59,7 +59,7 @@
             {
                 targets: 3,
                 data: 'phoneNumber',
-                sortable: true
+                sortable: false
 
             },
             {
@@ -71,7 +71,22 @@
             {
                 targets: 5,
                 data:'priority',
-                sortable: true
+                sortable: true,
+                render: (data, type, row, meta) => {
+
+                    switch (type) {
+
+                        case "display":
+                            return priorityList[data];
+
+                        case "filter":
+                            return priorityList[data];
+
+                        default:
+                            return data;
+                    }
+
+                }
 
             },
             {

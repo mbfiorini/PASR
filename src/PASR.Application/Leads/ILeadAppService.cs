@@ -16,6 +16,5 @@ namespace PASR.Leads
 
         Task<GetLeadForEditOutput> GetLeadForEdit(EntityDto input);
 
-
     }
 }

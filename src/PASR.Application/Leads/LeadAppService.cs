@@ -83,13 +83,13 @@ namespace PASR.Leads
 
         public override async Task<PagedResultDto<LeadDto>> GetAllAsync(PagedLeadResultRequestDto input)
         {
-            var query = CreateFilteredQuery(input);
+            //var query = CreateFilteredQuery(input);
 
-            var queryResult = await query.ToListAsync<Lead>();
+            //var queryResult = await query.ToListAsync<Lead>();
 
-            var items = ObjectMapper.Map<IReadOnlyList<LeadDto>>(queryResult);
+            //var items = ObjectMapper.Map<IReadOnlyList<LeadDto>>(queryResult);
 
-            return await Task.Run(() => new PagedResultDto<LeadDto>(items.Count, items));
+            //return await Task.Run(() => new PagedResultDto<LeadDto>(items.Count, items));
 
             return await base.GetAllAsync(input);
 
@@ -121,13 +121,13 @@ namespace PASR.Leads
         {
             var lead = await Repository.FirstOrDefaultAsync(input.Id);
             var leadEditDto = ObjectMapper.Map<LeadEditDto>(lead);
-            var SDRsDto = ObjectMapper.Map<ListResultDto<UserDto>>(await _userStore.GetUsersInRoleAsync("SDR"));
+            var users = await _userStore.GetUsersInRoleAsync("SDR");
 
             return new GetLeadForEditOutput
             {
                 Lead = leadEditDto,
-                Users = SDRsDto
-            };
+                Users = ObjectMapper.Map<List<UserDto>>(users)
+        };
         }
     }
 }

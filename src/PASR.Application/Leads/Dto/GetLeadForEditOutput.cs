@@ -13,7 +13,7 @@ namespace PASR.Leads.Dto
     {
         public LeadEditDto Lead { get; set; }
 
-        public ListResultDto<UserDto> Users { get; set; }
+        public List<UserDto> Users { get; set; }
 
     }
 }
