@@ -1,0 +1,35 @@
+﻿@using PASR.Users.Dto
+
+@model UserDto
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6">
+                <!--Use for bulk actions-->
+            </div>
+            <div class="col-md-6">
+                @await Html.PartialAsync("~/Views/Users/Index.AdvancedSearch.cshtml")
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="UsersTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>@L("UserName")</th>
+                        <th>@L("FullName")</th>
+                        <th>@L("EmailAddress")</th>
+                        <th style="width: 150px">@L("Action")</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/view-resources/Views/Lead/_UserSelection.js" asp-append-version="true"></script>
+

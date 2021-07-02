@@ -1,7 +1,7 @@
 ﻿@using PASR.Web.Startup
 @model PASR.Web.Models.Leads.LeadListViewModel
 @{ ViewBag.Title = L("Leads");
-                ViewBag.CurrentPageName = PageNames.Leads; }
+   ViewBag.CurrentPageName = PageNames.Leads; }
 @section scripts
 {
     <environment names="Development">
@@ -19,7 +19,7 @@
                 <h1>@L("Leads")</h1>
             </div>
             <div class="col-sm-6">
-                <a href="javascript:;" data-toggle="modal" data-target="#leadCreateModal" class="btn bg-blue float-sm-right">
+                <a href="javascript:;" data-toggle="modal" data-target="#LeadCreateModal" class="btn bg-blue float-sm-right">
                     <i class="fa fa-plus-square"></i>
                     @L("Create")
                 </a>
@@ -48,11 +48,11 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>@L("name")</th>
-                                        <th>@L("surname")</th>
-                                        <th>@L("phoneNumber")</th>
-                                        <th>@L("email")</th>
-                                        <th>@L("priority")</th>
+                                        <th>@L("Name")</th>
+                                        <th>@L("Surname")</th>
+                                        <th>@L("PhoneNumber")</th>
+                                        <th>@L("EmailAddress")</th>
+                                        <th>@L("Priority")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,3 +74,4 @@
         </div>
     </div>
 </div>
+

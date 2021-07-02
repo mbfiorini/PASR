@@ -67,6 +67,7 @@ namespace PASR.Leads
             return MapToEntityDto(lead);
         }
 
+
         public override async Task DeleteAsync(EntityDto<int> input)
         {
             CheckDeletePermission();
@@ -79,6 +80,40 @@ namespace PASR.Leads
             }
 
             await Repository.DeleteAsync(lead);
+        }
+
+        public async Task AssignToUserAsync(AssignToUserDto input)
+        {
+            CheckUpdatePermission();
+
+            var lead = await Repository
+                .FirstOrDefaultAsync(input.Id);
+            
+            if (lead == null)
+            {
+                throw new UserFriendlyException(L("Lead not Found!"));
+            }
+
+            try
+            {
+                var user = await _userStore.FindByIdAsync(input.UserId.ToString());
+
+                if (lead.AssignedUser.Id == user.Id)
+                {
+                    throw new UserFriendlyException(L("Lead already assigned to this User!"));
+                }
+
+                lead.AssignedUser = user;
+
+                await Repository.UpdateAsync(lead);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+                throw new UserFriendlyException(L("User not Found!"));
+            }                       
+
+            
         }
 
         public override async Task<PagedResultDto<LeadDto>> GetAllAsync(PagedLeadResultRequestDto input)

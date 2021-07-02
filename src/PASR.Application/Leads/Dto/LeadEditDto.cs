@@ -29,6 +29,10 @@ namespace PASR.Leads.Dto
         public string EmailAddress { get; set; }
 
         [Required]
+        [StringLength(PASRConsts.MaxNamesLength)]
+        public string CompanyName { get; set; }
+
+        [Required]
         [StringLength(14)]
         public string PhoneNumber { get; set; }
 
@@ -42,6 +46,5 @@ namespace PASR.Leads.Dto
 
         public ICollection<AddressDto> Addresses { get; set; }
 
-        public bool IsActive { get; set; }
     }
 }

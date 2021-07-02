@@ -54,7 +54,7 @@ namespace PASR.Web.Startup
                         PageNames.Leads,
                         L("Leads"),
                         url: "Lead",
-                        icon: "fas fa-info-circle",
+                        icon: "fas fa-address-card",
                         order: 4
                     )
                 ).AddItem(

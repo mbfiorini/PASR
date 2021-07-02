@@ -114,7 +114,7 @@
   {
     "outputFileName": "wwwroot/view-resources/Views/Lead/Index.min.js",
     "inputFiles": [
-      "wwwroot/view-resources/Views/Roles/Index.js"
+      "wwwroot/view-resources/Views/Lead/Index.js"
     ]
   },
   {

@@ -13,6 +13,10 @@ html {
     z-index: 1110;
 }
 
+textarea {
+    resize: none;
+}
+
 .form-group.required .col-form-label:after {
     color: #d00;
     content: "*";

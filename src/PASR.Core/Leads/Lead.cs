@@ -40,7 +40,11 @@ namespace PASR.Leads
         [Required]
         [StringLength(PASRConsts.MaxNamesLength)]
         public string LastName { get; set; }
-        
+
+        [Required]
+        [StringLength(PASRConsts.MaxNamesLength)]
+        public string CompanyName { get; set; }
+
         public User AssignedUser { get; set; }
 
         [Required]

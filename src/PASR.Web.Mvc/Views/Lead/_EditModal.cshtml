@@ -1,9 +1,9 @@
 ﻿@using PASR.Web.Models.Common.Modals
 @using PASR.Web.Models.Leads
+@using PASR.Authorization
+
 @model EditLeadModalViewModel
-@{
-    Layout = null;
-}
+@{ Layout = null; }
 @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditLead")))
 <form name="LeadEditForm" role="form" class="form-horizontal">
     <input type="hidden" asp-for="@Model.Lead.Id" />
@@ -15,6 +15,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" role="tab" href="#edit-lead-addresses">@L("Addressess")</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" role="tab" href="#edit-lead-user">@L("AssignToUser")</a>
+            </li>
         </ul>
         <div class="tab-content mt-4">
             <div role="tabpanel" class="tab-pane container active" id="edit-lead-details">
@@ -22,38 +25,62 @@
                     <label class="col-md-3 col-form-label" asp-for="@Model.Lead.Name">@L("Name")</label>
                     <div class="col-md-9">
                         <input type="text" class="form-control" asp-for="@Model.Lead.Name">
+                        <span asp-validation-for="@Model.Lead.Name" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row required">
-                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.IdentityCode">@L("IdentityCode")</label>
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.LastName">@L("LastName")</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control" asp-for="@Model.Lead.IdentityCode">
+                        <input type="text" class="form-control" asp-for="@Model.Lead.LastName">
+                        <span asp-validation-for="@Model.Lead.LastName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row required">
                     <label class="col-md-3 col-form-label" asp-for="@Model.Lead.EmailAddress">@L("EmailAddress")</label>
                     <div class="col-md-9">
                         <input asp-for="@Model.Lead.EmailAddress" type="email" class="form-control">
+                        <span asp-validation-for="@Model.Lead.EmailAddress" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.IsActive">@L("IsActive")</label>
+                <div class="form-group row required">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.CompanyName">@L("Company")</label>
                     <div class="col-md-9">
-                        <input id="IsActive" type="checkbox" asp-for="@Model.Lead.IsActive" value="@Model.Lead.IsActive" />
+                        <input type="text" class="form-control" asp-for="@Model.Lead.CompanyName">
+                        <span asp-validation-for="@Model.Lead.CompanyName" class="text-danger"></span>
                     </div>
+                </div>
+                <div class="form-group row required">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.IdentityCode">@L("IdentityCode")</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" asp-for="@Model.Lead.IdentityCode">
+                        <span asp-validation-for="@Model.Lead.IdentityCode" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row required">
+                    <label class="col-md-3 col-form-label" asp-for="@Model.Lead.PhoneNumber">@L("PhoneNumber")</label>
+                    <div class="col-md-9">
+                        <input asp-for="@Model.Lead.PhoneNumber" class="form-control">
+                        <span asp-validation-for="@Model.Lead.PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="assignedUser">@L("AssignedUser")</label>
+                    <input id="assignedUser" type="text" name="assignedUser" class="form-control" value="@Model.Lead.AssignedUser?.FullName" disabled>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane container" id="edit-lead-addresses">
-                <div class="row">
-                    @foreach (var address in Model.Lead.Addresses)
-                    {
-                        <partial name="_AddressPanel" model="address" />
-                    }
-                </div>
+                @foreach (var address in Model.Lead.Addresses)
+                {
+                    <partial name="_AddressPanel" model="address" />
+                }
+            </div>
+            <div role="tabpanel" class="tab-pane container" id="edit-lead-user">
+                <partial name="_UserSelection" model="@Model.Lead.AssignedUser" />
             </div>
         </div>
     </div>
     @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
 </form>
 
+@* Cuidado com scripts repetidos na importação de ViewsParciais *@
 <script src="~/view-resources/Views/Lead/_EditModal.js" asp-append-version="true"></script>

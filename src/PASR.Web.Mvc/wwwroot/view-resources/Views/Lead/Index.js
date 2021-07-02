@@ -10,6 +10,8 @@
     var _$leadsTable = _$table.DataTable({
         processing: true,
         serverSide: true,
+        ordering: true,
+        order: [[5, 'desc']],
         ajax: function (data, callback, settings) {
             var filter = $('#LeadsSearchForm').serializeFormToObject(true);
             filter.maxResultCount = data.length;
@@ -151,7 +153,12 @@
             type: 'POST',
             dataType: 'html',
             success: function (content) {
-                $('#LeadEditModal div.modal-content').html(content);
+                var container = $('#LeadEditModal div.modal-content');
+                container.html(content);
+                var editForm = container.children("form");
+                //Para poder validar com o Plugin do Jquery usando os tag-helpers em formulários dinâmicos
+                //https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-5.0#unobtrusive-validation
+                $.validator.unobtrusive.parse(editForm);
             },
             error: function (e) { 
                 abp.message.error("Erro ao obter HTML através do Serviço!");

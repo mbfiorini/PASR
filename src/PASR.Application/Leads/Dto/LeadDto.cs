@@ -30,6 +30,10 @@ namespace PASR.Leads.Dto
         public string IdentityCode { get; set; }
 
         [Required]
+        [StringLength(PASRConsts.MaxNamesLength)]
+        public string CompanyName { get; set; }
+
+        [Required]
         [StringLength(PASRConsts.MaxEmailAddressLength)]
         public string EmailAddress { get; set; }
 

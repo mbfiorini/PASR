@@ -1,7 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using PASR.Authorization.Users;
 using PASR.Controllers;
 using PASR.Leads;
 using PASR.Users;
@@ -28,9 +27,7 @@ namespace PASR.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new LeadListViewModel
-            {
-            };
+            var model = new LeadListViewModel {};
 
             return View(model);
         }

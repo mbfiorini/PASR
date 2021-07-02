@@ -3,10 +3,10 @@
 @model LeadListViewModel
 @{ Layout = null; }
 <div class="modal fade" id="LeadCreateModal" tabindex="-1" role="dialog" aria-labelledby="UserCreateModalLabel" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg h-100" role="document">
         <div class="modal-content">
             @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewLead")))
-            <form name="leadCreateForm" role="form" class="form-horizontal">
+            <form name="leadCreateForm" role="form" class="form-horizontal h-100">
                 <div class="modal-body">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
@@ -25,9 +25,21 @@
                                 </div>
                             </div>
                             <div class="form-group row required">
-                                <label for="lastname" class="col-md-3 col-form-label">@L("LastName")</label>
+                                <label for="lastname" class="col-md-3 col-form-label">@L("Surname")</label>
                                 <div class="col-md-9">
                                     <input id="lastname" type="text" class="form-control" name="LastName" required maxlength="@PASRConsts.MaxNamesLength">
+                                </div>
+                            </div>
+                            <div class="form-group row required">
+                                <label for="emailaddress" class="col-md-3 col-form-label">@L("EmailAddress")</label>
+                                <div class="col-md-9">
+                                    <input id="emailaddress" type="email" class="form-control" name="EmailAddress" required maxlength="@PASRConsts.MaxEmailAddressLength">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="CompanyName" class="col-md-3 col-form-label">@L("Company")</label>
+                                <div class="col-md-9">
+                                    <input id="CompanyName" type="text" class="form-control" name="CompanyName" required maxlength="@PASRConsts.MaxNamesLength">
                                 </div>
                             </div>
                             <div class="form-group row required">
@@ -42,17 +54,11 @@
                                     <input id="phone" type="text" class="form-control" name="PhoneNumber" required maxlength="14" placeholder="(99)99999-9999">
                                 </div>
                             </div>
-                            <div class="form-group row required">
-                                <label for="emailaddress" class="col-md-3 col-form-label">@L("EmailAddress")</label>
-                                <div class="col-md-9">
-                                    <input id="emailaddress" type="email" class="form-control" name="EmailAddress" required maxlength="@PASRConsts.MaxEmailAddressLength">
-                                </div>
-                            </div>
                             <div class="form-group row justify-content-end required">
                                 <div class="col-md-3">
                                     <label for="priority" class="col-12">@L("Priority")</label>
                                     <select id="priority" class="form-control" name="priority" required>
-                                        <option value="">@L("Priority")</option>
+                                        <option value="">@L("Undefined")</option>
                                         <option value="0">@L("Max")</option>
                                         <option value="1">@L("Average")</option>
                                         <option value="2">@L("Min")</option>
@@ -61,9 +67,9 @@
                             </div>
                         </div>
                         <div role="tabpanel" class="tab-pane container" id="create-lead-notes">
-                            <div class="form-group-lg row h-100">
-                                <label for="leadnotes" class="col-md-3">@L("Notes")</label>
-                                <textarea id="leadnotes" class="col-md-12 form-control-lg h-100" type="text" name="LeadNotes"></textarea>
+                            <div class="form-group">
+                                <label for="leadnote" class="d-block">@L("Notes")</label>
+                                <textarea id="leadnotes" class="form-control" type="text" name="LeadNotes" rows="10"></textarea>
                             </div>
                         </div>
                     </div>

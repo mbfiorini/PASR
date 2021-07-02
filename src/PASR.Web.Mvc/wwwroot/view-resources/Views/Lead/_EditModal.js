@@ -1,7 +1,7 @@
 ﻿(function ($) {
     var _leadService = abp.services.app.lead,
         l = abp.localization.getSource('PASR'),
-        _$modal = $('#leadEditModal'),
+        _$modal = $('#LeadEditModal'),
         _$form = _$modal.find('form');
 
     function save() {
@@ -45,3 +45,4 @@
         _$form.find('input[type=text]:first').focus();
     });
 })(jQuery);
+//# sourceURL=_EditModal.js

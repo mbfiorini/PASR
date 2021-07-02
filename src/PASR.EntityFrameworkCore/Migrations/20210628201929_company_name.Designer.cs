@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PASR.EntityFrameworkCore;
 
 namespace PASR.Migrations
 {
     [DbContext(typeof(PASRDbContext))]
-    partial class PASRDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210628201929_company_name")]
+    partial class company_name
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
