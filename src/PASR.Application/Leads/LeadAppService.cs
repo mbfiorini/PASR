@@ -29,6 +29,7 @@ namespace PASR.Leads
             : base(repository)
         {
             _userStore = userStore;
+            this.LocalizationSourceName = PASRConsts.LocalizationSourceName; 
             DeletePermissionName = PermissionNames.Delete_Leads;
             UpdatePermissionName = PermissionNames.Update_Leads;
         }
@@ -84,11 +85,20 @@ namespace PASR.Leads
 
         public async Task AssignToUserAsync(AssignToUserDto input)
         {
-            CheckUpdatePermission();
+            try
+            {
+                CheckUpdatePermission();
+
+            }
+            catch (Exception e)
+            {
+
+                Logger.Error(e.Message);
+            }
 
             var lead = await Repository
                 .FirstOrDefaultAsync(input.Id);
-            
+
             if (lead == null)
             {
                 throw new UserFriendlyException(L("Lead not Found!"));
@@ -98,7 +108,7 @@ namespace PASR.Leads
             {
                 var user = await _userStore.FindByIdAsync(input.UserId.ToString());
 
-                if (lead.AssignedUser.Id == user.Id)
+                if (lead.AssignedUser?.Id == user.Id)
                 {
                     throw new UserFriendlyException(L("Lead already assigned to this User!"));
                 }
@@ -109,8 +119,15 @@ namespace PASR.Leads
             }
             catch (Exception e)
             {
+
                 Logger.Error(e.Message);
-                throw new UserFriendlyException(L("User not Found!"));
+
+                if (e.GetType() != typeof(UserFriendlyException))
+                {
+                    throw new UserFriendlyException(L("User not Found!"));
+                }
+
+                throw e;
             }                       
 
             

@@ -7,6 +7,7 @@ using Abp.EntityFrameworkCore.Uow;
 using Abp.MultiTenancy;
 using PASR.EntityFrameworkCore.Seed.Host;
 using PASR.EntityFrameworkCore.Seed.Tenants;
+using PASR.EntityFrameworkCore.Seed.Testing;
 
 namespace PASR.EntityFrameworkCore.Seed
 {
@@ -27,6 +28,10 @@ namespace PASR.EntityFrameworkCore.Seed
             // Default tenant seed (in host database).
             new DefaultTenantBuilder(context).Create();
             new TenantRoleAndUserBuilder(context, 1).Create();
+
+            //PASR
+            new DefaultLeadBuilder(context).Create();
+
         }
 
         private static void WithDbContext<TDbContext>(IIocResolver iocResolver, Action<TDbContext> contextAction)

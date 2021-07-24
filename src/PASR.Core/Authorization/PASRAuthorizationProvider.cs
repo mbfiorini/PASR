@@ -18,8 +18,11 @@ namespace PASR.Authorization
             context.CreatePermission(PermissionNames.Pages_Roles, L("Roles"));
             context.CreatePermission(PermissionNames.Pages_Teams, L("Teams"));
             context.CreatePermission(PermissionNames.Pages_Calls, L("Calls"));
-            context.CreatePermission(PermissionNames.Pages_Leads, L("Leads"));
             context.CreatePermission(PermissionNames.Pages_Tenants, L("Tenants"), multiTenancySides: MultiTenancySides.Host);
+            context.CreatePermission(PermissionNames.Pages_Leads, L("Leads"));
+            context.CreatePermission(PermissionNames.Delete_Leads, L("Delete Leads"));
+            context.CreatePermission(PermissionNames.Update_Leads, L("Update Leads"));
+            context.CreatePermission(PermissionNames.Create_Leads, L("Create Leads"));
         }
 
         private static ILocalizableString L(string name)

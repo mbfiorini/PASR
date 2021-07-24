@@ -61,7 +61,7 @@
                 defaultContent: '',
                 render: (data, type, row, meta) => {
                     return [
-                        `   <button type="button" class="btn btn-sm bg-primary assign-user" data-user-id="${row.id} data-user-fname="${row.fullName}">`,
+                        `   <button type="button" class="btn btn-sm bg-primary assign-user" data-user-id="${row.id}" data-user-fname="${row.fullName}">`,
                         `       <i class="fas fa-user-check"></i> ${l('Assign')}`,
                         '   </button>'
                     ].join('');
@@ -77,7 +77,11 @@
         ]
     });
 
-    function assignLead(userId, username) {
+    function assignLead(userId, userName) {
+
+        //Tá escondido no form da página 1
+        leadId = $('#Lead_Id').val();
+
         abp.message.confirm(
             abp.utils.formatString(
                 l('AreYouSureWantToAssignTo'),
@@ -86,16 +90,16 @@
             (isConfirmed) => {
                 if (isConfirmed) {
                     _leadService.assignToUser({
-                        id: userId,
+                        id: leadId,
                         userId: userId
                     }).done(() => {
                         abp.event.trigger('user.assigned', {
                             id: userId,
-                            fullName: username
+                            fullName: userName
                         });
                         abp.notify.info(l('SuccessfullyAssigned'));
                         _$usersTable.ajax.reload();
-                    });
+                    }).error((e) => { console.log(e); });
                 }
             }
         );
@@ -107,6 +111,15 @@
         e.preventDefault();
 
         assignLead(userId, userFullName);
+    });
+
+    $(document).on('click', '.user-label', function (e) {
+        var userId = $(this).attr("label-user-id");
+        e.preventDefault();
+
+        var userRow = _$usersTable.row(`#${userId}`).select();
+
+
     });
 
     abp.event.on('user.assigned', (data) => {
@@ -125,3 +138,5 @@
         }
     });
 })(jQuery);
+//# sourceURL=_UserSelection.js
+

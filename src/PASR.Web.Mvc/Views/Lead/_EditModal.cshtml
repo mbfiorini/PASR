@@ -69,10 +69,12 @@
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane container" id="edit-lead-addresses">
-                @foreach (var address in Model.Lead.Addresses)
-                {
-                    <partial name="_AddressPanel" model="address" />
-                }
+                <div class="row">
+                    @foreach (var address in Model.Lead.Addresses)
+                    {
+                        <partial name="_AddressPanel" model="address" />
+                    }
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane container" id="edit-lead-user">
                 <partial name="_UserSelection" model="@Model.Lead.AssignedUser" />

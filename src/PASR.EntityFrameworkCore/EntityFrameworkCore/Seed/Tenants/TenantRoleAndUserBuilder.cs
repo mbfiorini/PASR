@@ -9,6 +9,8 @@ using Abp.MultiTenancy;
 using PASR.Authorization;
 using PASR.Authorization.Roles;
 using PASR.Authorization.Users;
+using PASR.Leads;
+using PASR.Localization;
 
 namespace PASR.EntityFrameworkCore.Seed.Tenants
 {
@@ -84,6 +86,7 @@ namespace PASR.EntityFrameworkCore.Seed.Tenants
                 _context.UserRoles.Add(new UserRole(_tenantId, adminUser.Id, adminRole.Id));
                 _context.SaveChanges();
             }
+
         }
     }
 }

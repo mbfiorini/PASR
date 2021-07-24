@@ -39,10 +39,12 @@ namespace PASR.Tests.Teams
             await _teamAppService.CreateAsync(
                 new CreateTeamDto
                 {
-                    TeamName = "TestTeam"
+                    TeamName = "TestTeam",
 
                 });
 
+            //Esse encapsulamento ajuda a usar o Tenant correto na hora de ver como o DBcontext será instanciado, pega da sessão ou usa o null
+            //Também serve para centralizar o código que obtem o DBContext através do IoCManager em um lugar só
             await UsingDbContextAsync(async context =>
             {
                 var matheusDosAnjos = await context.Leads.FirstOrDefaultAsync(l => l.IdentityCode == "48291929840");

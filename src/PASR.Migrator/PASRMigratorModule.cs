@@ -19,7 +19,8 @@ namespace PASR.Migrator
             abpProjectNameEntityFrameworkModule.SkipDbSeed = true;
 
             _appConfiguration = AppConfigurations.Get(
-                typeof(PASRMigratorModule).GetAssembly().GetDirectoryPathOrNull()
+                typeof(PASRMigratorModule).GetAssembly().GetDirectoryPathOrNull(),
+                "Development"
             );
         }
 

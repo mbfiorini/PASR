@@ -1,11 +1,23 @@
 ﻿@using PASR.Users.Dto
 
 @model UserDto
+
 <div class="card">
     <div class="card-header">
         <div class="row">
             <div class="col-md-6">
-                <!--Use for bulk actions-->
+                <h2>
+                    Current:
+                    @if (Model != null)
+                    {
+                        <a href="javascript:;" class="badge badge-primary user-label" label-user-id="@Model.Id">@Model.Name</a>
+                    }
+                    else
+                    {
+                        <a href="javascript:;" class="badge badge-secondary">@L("None")</a>
+
+                    }
+                </h2>
             </div>
             <div class="col-md-6">
                 @await Html.PartialAsync("~/Views/Users/Index.AdvancedSearch.cshtml")
