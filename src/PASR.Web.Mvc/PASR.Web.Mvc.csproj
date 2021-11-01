@@ -51,7 +51,6 @@
     <PackageReference Include="Abp.Castle.Log4Net" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\" />
     <Folder Include="wwwroot\libs\" />
     <Folder Include="wwwroot\view-resources\Views\_Bundles\" />
   </ItemGroup>

@@ -13,13 +13,20 @@ namespace PASR.Calls
     public class Call : Entity<int>
     {
         protected Call() { }
-        public Call(User user, Lead lead, DateTime callStartDateTime, DateTime callEndDateTime, CallResult callResult)
+        public Call(
+            User user,
+            Lead lead,
+            DateTime callStartDateTime,
+            DateTime callEndDateTime,
+            CallResult callResult,
+            ResultReason resultReason)
         {
             User = user;
             Lead = lead;
             CallStartDateTime = callStartDateTime;
             CallEndDateTime = callEndDateTime;
             CallResult = callResult;
+            ResultReason = resultReason;
         }
 
         [Required]
@@ -38,6 +45,10 @@ namespace PASR.Calls
         [EnumDataType(typeof(CallResult))]
         public CallResult CallResult { get; set; }
 
+        [Required]
+        [EnumDataType(typeof(ResultReason))]
+        public ResultReason ResultReason { get; set; }
+
         public string CallNotes { get; set; }
 
         public TimeSpan GetTimeSpent() {
@@ -50,6 +61,19 @@ namespace PASR.Calls
     {
         NotSignificant,
         Significant,
-        PromissingDeal
+        ScheduledMeeting
     }
+
+    public enum ResultReason
+    {
+        Absence,
+        Ocuppied,
+        NotInterested,
+        Brand,
+        Indication,
+        Necessity,
+        UnsatisfationWithConcurrency,
+        ConnectionOrTechnical
+    }
+
 }

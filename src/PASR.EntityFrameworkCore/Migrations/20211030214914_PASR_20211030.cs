@@ -3,22 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PASR.Migrations
 {
-    public partial class Initial_PASR : Migration
+    public partial class PASR_20211030 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "PhoneNumber",
-                table: "AbpUsers",
-                type: "nvarchar(32)",
-                maxLength: 32,
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(32)",
-                oldMaxLength: 32,
-                oldNullable: true);
-
             migrationBuilder.AddColumn<string>(
                 name: "Address_City",
                 table: "AbpUsers",
@@ -60,11 +48,17 @@ namespace PASR.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    IdentityCode = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     AssignedUserId = table.Column<long>(type: "bigint", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     LeadNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Priority = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    FirstContact = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NextContact = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -81,7 +75,7 @@ namespace PASR.Migrations
                         column: x => x.AssignedUserId,
                         principalTable: "AbpUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,8 +84,8 @@ namespace PASR.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TeamName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    TeamDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    TeamName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    TeamDescription = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,6 +127,7 @@ namespace PASR.Migrations
                     CallStartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CallEndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CallResult = table.Column<int>(type: "int", nullable: false),
+                    ResultReason = table.Column<int>(type: "int", nullable: false),
                     CallNotes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -158,14 +153,15 @@ namespace PASR.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TeamId = table.Column<int>(type: "int", nullable: false)
+                    CurrentScore = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Goals", x => x.Id);
+                    table.PrimaryKey("PK_Goals", x => new { x.TeamId, x.Id });
                     table.ForeignKey(
                         name: "FK_Goals_Teams_TeamId",
                         column: x => x.TeamId,
@@ -214,15 +210,15 @@ namespace PASR.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Goals_TeamId",
-                table: "Goals",
-                column: "TeamId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Leads_AssignedUserId",
                 table: "Leads",
                 column: "AssignedUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Leads_IdentityCode",
+                table: "Leads",
+                column: "IdentityCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTeams_UsersId",
@@ -269,16 +265,6 @@ namespace PASR.Migrations
             migrationBuilder.DropColumn(
                 name: "Address_Street",
                 table: "AbpUsers");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "PhoneNumber",
-                table: "AbpUsers",
-                type: "nvarchar(32)",
-                maxLength: 32,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(32)",
-                oldMaxLength: 32);
         }
     }
 }

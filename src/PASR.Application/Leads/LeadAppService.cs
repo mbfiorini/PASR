@@ -30,7 +30,7 @@ namespace PASR.Leads
         {
             _userStore = userStore;
             this.LocalizationSourceName = PASRConsts.LocalizationSourceName; 
-            DeletePermissionName = PermissionNames.Delete_Leads;
+            DeletePermissionName = PermissionNames.Update_Leads;
             UpdatePermissionName = PermissionNames.Update_Leads;
         }
 
@@ -68,7 +68,6 @@ namespace PASR.Leads
             return MapToEntityDto(lead);
         }
 
-
         public override async Task DeleteAsync(EntityDto<int> input)
         {
             CheckDeletePermission();
@@ -88,11 +87,9 @@ namespace PASR.Leads
             try
             {
                 CheckUpdatePermission();
-
             }
             catch (Exception e)
             {
-
                 Logger.Error(e.Message);
             }
 
@@ -127,9 +124,9 @@ namespace PASR.Leads
                     throw new UserFriendlyException(L("User not Found!"));
                 }
 
-                throw e;
-            }                       
+                throw new UserFriendlyException(L(e.Message));
 
+            }
             
         }
 
@@ -171,7 +168,7 @@ namespace PASR.Leads
 
         public async Task<GetLeadForEditOutput> GetLeadForEdit(EntityDto input)
         {
-            var lead = await Repository.FirstOrDefaultAsync(input.Id);
+            var lead = await GetEntityByIdAsync(input.Id);
             var leadEditDto = ObjectMapper.Map<LeadEditDto>(lead);
             var users = await _userStore.GetUsersInRoleAsync("SDR");
 
@@ -179,7 +176,7 @@ namespace PASR.Leads
             {
                 Lead = leadEditDto,
                 Users = ObjectMapper.Map<List<UserDto>>(users)
-        };
+            };
         }
     }
 }

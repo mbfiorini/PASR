@@ -82,22 +82,21 @@ namespace PASR.EntityFrameworkCore
                 c.Navigation(c => c.Lead).IsRequired();
             });
 
-            modelBuilder.Entity<Goal>(t => 
-            {
-                t.ToTable("Goals");
+            // modelBuilder.Entity<Goal>(t => 
+            // {
+            //     t.ToTable("Goals");
 
-                //ShadowProperty
-                t.Property<int>("TeamId");
+            //     //ShadowProperty
+            //     t.Property<int>("TeamId");
 
-            });
+            // });
 
             modelBuilder.Entity<Team>(t =>
             {
                 t.ToTable("Teams");
 
-                t.HasOne(t => t.Goal)
-                    .WithOne(g => g.Team)
-                    .HasForeignKey<Goal>("TeamId");
+                t.OwnsMany<Goal>(t => t.Goals).ToTable("Goals")
+                    .WithOwner(g => g.Team);
             });
 
             base.OnModelCreating(modelBuilder);

@@ -39,10 +39,12 @@ namespace PASR.Leads.Dto
         [MaxLength]
         public string LeadNotes { get; set; }
 
-        public UserDto AssignedUser { get; set; }
+        public string AssignedUserName { get; set; }
 
         [Required]
         public Lead.LeadPriority Priority { get; set; }
+
+        public Lead.LeadStatus Status { get; set; }
 
         public ICollection<AddressDto> Addresses { get; set; }
 

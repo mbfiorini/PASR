@@ -30,7 +30,7 @@ namespace PASR.EntityFrameworkCore.Seed
             new TenantRoleAndUserBuilder(context, 1).Create();
 
             //PASR
-            new DefaultLeadBuilder(context).Create();
+            new DefultWorkflowBuilder(context).Create();
 
         }
 

@@ -17,12 +17,15 @@ namespace PASR.Leads
     {
         protected Lead() { }
 
-        public Lead(string name, string lastName, string phoneNumber, string cgc)
+        public Lead(string name, string lastName, string phoneNumber, string cgc, string companyName, string emailAddress, LeadPriority priority)
         {
             Name = name;
             LastName = lastName;
             PhoneNumber = phoneNumber;
             IdentityCode = cgc;
+            CompanyName = companyName;
+            EmailAddress = emailAddress;
+            Priority = priority;
         }
 
         [Required]
@@ -61,6 +64,10 @@ namespace PASR.Leads
         [Required]
         [EnumDataType(typeof(LeadPriority))]
         public LeadPriority Priority { get; set; }
+        
+        public DateTime FirstContact { get; set; }
+
+        public DateTime NextContact { get; set; }
 
         public enum LeadPriority
         {
@@ -69,5 +76,12 @@ namespace PASR.Leads
             Min
         }
 
+        public enum LeadStatus
+        {
+            NotContacted,
+            OnProspection,
+            ScheduledMeeting,
+            Archived
+        }
     }
 }

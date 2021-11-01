@@ -28,6 +28,9 @@ namespace PASR.Goals
         [Required]
         public DateTime EndDate { get; set; }
 
+        public decimal CurrentScore { get; set; }
+
+        [Required]
         public Team Team { get; set; }
 
         public int GetExpirationDays(DateTime dateTime)

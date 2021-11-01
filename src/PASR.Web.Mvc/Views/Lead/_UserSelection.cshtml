@@ -1,23 +1,15 @@
 ﻿@using PASR.Users.Dto
-
-@model UserDto
+@using PASR.Web.Models.Leads
+@model LeadListViewModel
 
 <div class="card">
     <div class="card-header">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-md-6">
-                <h2>
-                    Current:
-                    @if (Model != null)
-                    {
-                        <a href="javascript:;" class="badge badge-primary user-label" label-user-id="@Model.Id">@Model.Name</a>
-                    }
-                    else
-                    {
-                        <a href="javascript:;" class="badge badge-secondary">@L("None")</a>
-
-                    }
-                </h2>
+                <div class="form-group">
+                    <label for="assignedUser">@L("AssignedUser")</label>
+                    <input id="assignedUser" type="text" name="assignedUserName" class="form-control" value="Undefined" disabled>
+                </div>
             </div>
             <div class="col-md-6">
                 @await Html.PartialAsync("~/Views/Users/Index.AdvancedSearch.cshtml")
@@ -42,6 +34,3 @@
         </div>
     </div>
 </div>
-
-<script src="~/view-resources/Views/Lead/_UserSelection.js" asp-append-version="true"></script>
-

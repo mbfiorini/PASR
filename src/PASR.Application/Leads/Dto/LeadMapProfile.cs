@@ -22,7 +22,7 @@ namespace PASR.Leads.Dto
             CreateMap<Lead, LeadListOutputDto>()
                 .ForMember(ll => ll.FullName, opt => opt.MapFrom(l => $"{l.Name} {l.LastName}"));
 
-            CreateMap<Lead, LeadEditDto>();
+            CreateMap<Lead, LeadEditDto>().ForMember(le => le.AssignedUserName, opt => opt.MapFrom(l => l.AssignedUser.UserName));
         }
     }
 }

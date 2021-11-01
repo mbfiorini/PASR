@@ -6,7 +6,7 @@
     <div class="modal-dialog modal-lg h-100" role="document">
         <div class="modal-content">
             @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewLead")))
-            <form name="leadCreateForm" role="form" class="form-horizontal h-100">
+            <form id="leadCreateForm" role="form" class="form-horizontal h-100">
                 <div class="modal-body">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
@@ -58,7 +58,6 @@
                                 <div class="col-md-3">
                                     <label for="priority" class="col-12">@L("Priority")</label>
                                     <select id="priority" class="form-control" name="priority" required>
-                                        <option value="">@L("Undefined")</option>
                                         <option value="0">@L("Max")</option>
                                         <option value="1">@L("Average")</option>
                                         <option value="2">@L("Min")</option>

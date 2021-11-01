@@ -67,11 +67,4 @@
 </section>
 
 @await Html.PartialAsync("~/Views/Lead/_CreateModal.cshtml", Model)
-
-<div class="modal fade" id="LeadEditModal" tabindex="-1" role="dialog" aria-labelledby="LeadEditModalLabel" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-        </div>
-    </div>
-</div>
-
+@await Html.PartialAsync("~/Views/Lead/_EditModal.cshtml", Model)

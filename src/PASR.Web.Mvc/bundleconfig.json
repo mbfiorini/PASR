@@ -76,6 +76,8 @@
       "wwwroot/libs/datatables/js/responsive.bootstrap4.min.js",
       "wwwroot/libs/datatables/js/dataTables.buttons.js",
       "wwwroot/libs/datatables/js/buttons.bootstrap4.js",
+      "wwwroot/libs/form-binding/jquery-json-form-binding.js",
+      "wwwroot/view-resources/utils/PASR.js",
       "wwwroot/js/main.js",
       "wwwroot/view-resources/Views/Shared/_Layout.js"
     ]

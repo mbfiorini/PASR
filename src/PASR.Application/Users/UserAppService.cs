@@ -24,7 +24,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PASR.Users
 {
-    [AbpAuthorize(PermissionNames.Pages_Users)]
+    // [AbpAuthorize(PermissionNames.Pages_Users)]
     public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>, IUserAppService
     {
         private readonly UserManager _userManager;
@@ -93,6 +93,7 @@ namespace PASR.Users
             return await GetAsync(input);
         }
 
+        [AbpAuthorize(PermissionNames.Update_Users)]
         public override async Task DeleteAsync(EntityDto<long> input)
         {
             var user = await _userManager.GetUserByIdAsync(input.Id);

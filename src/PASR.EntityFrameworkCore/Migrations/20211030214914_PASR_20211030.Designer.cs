@@ -10,8 +10,8 @@ using PASR.EntityFrameworkCore;
 namespace PASR.Migrations
 {
     [DbContext(typeof(PASRDbContext))]
-    [Migration("20210613194020_PASR_Initial_3")]
-    partial class PASR_Initial_3
+    [Migration("20211030214914_PASR_20211030")]
+    partial class PASR_20211030
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1488,7 +1488,6 @@ namespace PASR.Migrations
                         .HasColumnType("nvarchar(328)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
@@ -1546,6 +1545,9 @@ namespace PASR.Migrations
                     b.Property<int>("LeadId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ResultReason")
+                        .HasColumnType("int");
+
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
@@ -1558,33 +1560,6 @@ namespace PASR.Migrations
                     b.ToTable("Calls");
                 });
 
-            modelBuilder.Entity("PASR.Goals.Goal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Score")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TeamId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TeamId")
-                        .IsUnique();
-
-                    b.ToTable("Goals");
-                });
-
             modelBuilder.Entity("PASR.Leads.Lead", b =>
                 {
                     b.Property<int>("Id")
@@ -1594,6 +1569,11 @@ namespace PASR.Migrations
 
                     b.Property<long?>("AssignedUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -1611,6 +1591,9 @@ namespace PASR.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FirstContact")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("IdentityCode")
                         .IsRequired()
@@ -1638,6 +1621,9 @@ namespace PASR.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("NextContact")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -2038,17 +2024,6 @@ namespace PASR.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PASR.Goals.Goal", b =>
-                {
-                    b.HasOne("PASR.Teams.Team", "Team")
-                        .WithOne("Goal")
-                        .HasForeignKey("PASR.Goals.Goal", "TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-                });
-
             modelBuilder.Entity("PASR.Leads.Lead", b =>
                 {
                     b.HasOne("PASR.Authorization.Users.User", "AssignedUser")
@@ -2130,6 +2105,43 @@ namespace PASR.Migrations
                     b.Navigation("Edition");
 
                     b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("PASR.Teams.Team", b =>
+                {
+                    b.OwnsMany("PASR.Goals.Goal", "Goals", b1 =>
+                        {
+                            b1.Property<int>("TeamId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .UseIdentityColumn();
+
+                            b1.Property<decimal>("CurrentScore")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<DateTime>("EndDate")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<decimal>("Score")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<DateTime>("StartDate")
+                                .HasColumnType("datetime2");
+
+                            b1.HasKey("TeamId", "Id");
+
+                            b1.ToTable("Goals");
+
+                            b1.WithOwner("Team")
+                                .HasForeignKey("TeamId");
+
+                            b1.Navigation("Team");
+                        });
+
+                    b.Navigation("Goals");
                 });
 
             modelBuilder.Entity("TeamUser", b =>
@@ -2225,11 +2237,6 @@ namespace PASR.Migrations
             modelBuilder.Entity("PASR.Leads.Lead", b =>
                 {
                     b.Navigation("Calls");
-                });
-
-            modelBuilder.Entity("PASR.Teams.Team", b =>
-                {
-                    b.Navigation("Goal");
                 });
 #pragma warning restore 612, 618
         }

@@ -48,6 +48,6 @@ namespace PASR.Leads.Dto
 
         public ICollection<AddressDto> Addresses { get; set; }
 
-        public UserDto AssignedUser { get; set; }
+        // public UserDto AssignedUser { get; set; }
     }
 }

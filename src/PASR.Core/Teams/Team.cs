@@ -32,7 +32,7 @@ namespace PASR.Teams
 
         public ICollection<User> Users { get; set; }
 
-        public Goal Goal { get; set; }
+        public IEnumerable<Goal> Goals { get; set; }
 
     }
 }
