@@ -36,6 +36,41 @@
         return obj;
     };
 
+    //visibleFormToObject Plugin for JQuery
+    $.fn.visibleFormToObject = function (camelCased = false) {
+        //serialize to array
+
+        $(this).find(':hidden[name]').attr("disabled", true);
+
+        let data = $(this).serializeArray();
+
+        //map to object
+        var obj = {};
+        data.map(function (x) { obj[x.name] = x.value; });
+
+        if (camelCased && camelCased === true) {
+            return convertToCamelCasedObject(obj);
+        }
+
+        $(this).find(':disabled[name]').removeAttr("disabled");
+
+        return obj;
+    };
+
+    $.fn.enableFormField = function (required = false) {
+
+        $(this).attr("required", required).closest('.form-group').show(500);
+
+        return this;
+    };
+
+    $.fn.disableFormField = function () {
+
+        $(this).val('').removeAttr("required").closest('.form-group').hide(500);
+
+        return this;
+    };
+
     //Configure blockUI
     if ($.blockUI) {
         $.blockUI.defaults.baseZ = 2000;
@@ -130,6 +165,7 @@
             $(obj).removeClass('is-invalid');
         });
         $this[0].reset();
+        return $this;
     };
 
 })(jQuery);

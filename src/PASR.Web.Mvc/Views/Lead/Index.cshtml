@@ -1,17 +1,40 @@
 ﻿@using PASR.Web.Startup
+@using System.Globalization
 @model PASR.Web.Models.Leads.LeadListViewModel
 @{ ViewBag.Title = L("Leads");
    ViewBag.CurrentPageName = PageNames.Leads; }
+
+@section styles{
+    <link href="~/libs-ext/countdown/css/jquery.countdown.css" rel="stylesheet" asp-append-version="true" />
+
+    <environment names="Development">
+        <link href="~/libs-ext/datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="~/libs-ext/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+}
+
 @section scripts
 {
     <environment names="Development">
         <script src="~/view-resources/Views/Lead/Index.js" asp-append-version="true"></script>
+        <script src="~/libs-ext/countdown/js/jquery.plugin.js" asp-append-version="true"></script>
+        <script src="~/libs-ext/countdown/js/jquery.countdown.js" asp-append-version="true"></script>
     </environment>
-
+    <script src="~/libs-ext/datetimepicker/js/bootstrap-datetimepicker.min.js" asp-append-version="true"></script>
     <environment names="Staging,Production">
         <script src="~/view-resources/Views/Lead/Index.min.js" asp-append-version="true"></script>
+        <script src="~/libs-ext/countdown/js/jquery.plugin.min.js" asp-append-version="true"></script>
+        <script src="~/libs-ext/countdown/js/jquery.countdown.min.js" asp-append-version="true"></script>
     </environment>
+    
+    @if (CultureInfo.CurrentUICulture.Name != "en")
+    {
+        <script src="~/libs-ext/countdown/js/jquery.countdown-@(CultureInfo.CurrentUICulture.Name).js" asp-append-version="true"></script>
+    }
 }
+
 <section class="content-header">
     <div class="container-fluid">
         <div class="row">
@@ -68,3 +91,4 @@
 
 @await Html.PartialAsync("~/Views/Lead/_CreateModal.cshtml", Model)
 @await Html.PartialAsync("~/Views/Lead/_EditModal.cshtml", Model)
+@await Html.PartialAsync("~/Views/Lead/_CallModal.cshtml", Model)

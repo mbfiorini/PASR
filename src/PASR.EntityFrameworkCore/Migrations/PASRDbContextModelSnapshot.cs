@@ -1540,6 +1540,9 @@ namespace PASR.Migrations
                     b.Property<DateTime>("CallStartDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("Intersted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LeadId")
                         .HasColumnType("int");
 

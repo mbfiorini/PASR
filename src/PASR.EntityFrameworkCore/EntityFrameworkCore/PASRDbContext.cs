@@ -46,12 +46,11 @@ namespace PASR.EntityFrameworkCore
                               a.Property(a => a.FederalUnity).IsRequired(); //UF
                           });
 
+                //Shadow entity
                 u.HasMany(u => u.Teams).WithMany(t => t.Users).UsingEntity(ut => ut.ToTable("UserTeams"));
 
                 u.HasMany(u => u.Calls).WithOne(c => c.User);
             });
-
-
             
             modelBuilder.Entity<Lead>(l => 
             {

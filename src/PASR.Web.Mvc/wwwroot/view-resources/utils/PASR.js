@@ -8,9 +8,9 @@
         // Prority Lists
         pasr.maps.priorityDesc = pasr.maps.priorityDesc || new Map();
 
-        pasr.maps.priorityDesc.set('max', 0);
-        pasr.maps.priorityDesc.set('avarage',1);
-        pasr.maps.priorityDesc.set('min', 2);
+        pasr.maps.priorityDesc.set('Max', 0);
+        pasr.maps.priorityDesc.set('Normal',1);
+        pasr.maps.priorityDesc.set('Min', 2);
         
         pasr.maps.priorityList = pasr.maps.priorityList || ["Max", "Normal", "Min"];
 

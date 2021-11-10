@@ -49,6 +49,10 @@ namespace PASR.Leads.Dto
         public Lead.LeadPriority Priority { get; set; }
 
         public Lead.LeadStatus Status { get; set; }
+
+        public DateTime FirstContact { get; set; }
+
+        public DateTime NextContact { get; set; }
         
         public ICollection<AddressDto> Addresses { get; set; }
 

@@ -51,6 +51,8 @@ namespace PASR.Calls
 
         public string CallNotes { get; set; }
 
+        public bool Intersted { get; set; }
+
         public TimeSpan GetTimeSpent() {
 
             return (CallEndDateTime - CallStartDateTime);
@@ -68,12 +70,12 @@ namespace PASR.Calls
     {
         Absence,
         Ocuppied,
-        NotInterested,
+        NotProspectable,
         Brand,
         Indication,
         Necessity,
-        UnsatisfationWithConcurrency,
-        ConnectionOrTechnical
+        ConnectionOrTechnical,
+        Concurrency
     }
 
 }

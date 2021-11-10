@@ -4,6 +4,7 @@ using Abp.Modules;
 using Abp.Reflection.Extensions;
 using PASR.Configuration;
 using PASR.EntityFrameworkCore;
+using Abp.Timing;
 
 namespace PASR.Web.Startup
 {
@@ -23,6 +24,7 @@ namespace PASR.Web.Startup
 
         public override void PreInitialize()
         {
+            Clock.Provider = ClockProviders.Local;
             //Adiciona na lista de classes de navegação a classe que configura os itens que serão exibidos no menu de navegação, ele será injetado nas Views
             Configuration.Navigation.Providers.Add<PASRNavigationProvider>();
         }

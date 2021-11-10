@@ -1,0 +1,96 @@
+﻿@using PASR.Web.Models.Common.Modals
+@using PASR.Web.Models.Leads
+@model LeadListViewModel
+@{
+
+    Layout = null;
+}
+
+<div class="modal fade" id="LeadCallModal" tabindex="-1" role="dialog" aria-labelledby="CallToLeadModalDialog"
+    data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("Call")))
+            <div class="modal-body">
+                <div class="container-fluid mb-1">
+                    <div class="row justify-content-around">
+                        <span id="callCountdown" class="col-md-5">
+                        </span>
+                        <button id="finishCall" type="button" class="btn btn-primary col-md-5">@L("Finish")</button>
+                    </div>
+                </div>
+                <form id="callForm" role="form" class="form-horizontal">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" role="tab" href="#create-call">@L("Call")</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-4">
+                        <div role="tabpanel" class="tab-pane container active" id="create-call">
+                            <div class="form-group row justify-content-around">
+                                <label for="significant" class="col-md-4">@L("Significant?")</label>
+                                <div class="col-md-8">
+                                    <select id="significant" class="form-control" name="significant" required>
+                                        <option selected></option>
+                                        <option value="true">@L("Yes")</option>
+                                        <option value="false">@L("No")</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-around">
+                                <label for="interest" class="col-md-4">@L("ShowedInterest?")</label>
+                                <div class="col-md-8">
+                                    <select id="interest" class="form-control" name="interest">
+                                        <option selected></option>
+                                        <option value="true">@L("Yes")</option>
+                                        <option value="false">@L("No")</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-around">
+                                <label for="scheduled" class="col-md-4">@L("ScheduledMetting?")</label>
+                                <div class="col-md-8">
+                                    <select id="scheduled" class="form-control" name="scheduled">
+                                        <option selected></option>
+                                        <option value="true">@L("Yes")</option>
+                                        <option value="false">@L("No")</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-around">
+                                <label for="resultReason" class="col-md-4">@L("ResultReason")</label>
+                                <div class="col-md-8">
+                                    <select id="resultReason" class="form-control" name="resultReason">
+                                        <option selected></option>
+                                        <option value="0">@L("Absence")</option>
+                                        <option value="1">@L("Ocuppied")</option>
+                                        <option value="2">@L("NotProspectable")</option>
+                                        <option value="3">@L("Brand")</option>
+                                        <option value="4">@L("Indication")</option>
+                                        <option value="5">@L("Necessity")</option>
+                                        <option value="6">@L("ConnectionOrTechnical")</option>
+                                        <option value="7">@L("Concurrency")</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-around">
+                                <label for="nextContact" class="col-md-4">@L("NextContact")</label>
+                                <div class="input-group col-md-8">
+                                    <input id="nextContact" class="form-control datetime-picker" name="nextContact"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="callNotes" class="d-block">@L("Notes")</label>
+                                <textarea id="callNotes" class="form-control d-block" type="text" name="callNotes" rows="15" minlength="15"></textarea>                                
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button id="submitCallButton" type="submit" class="btn btn-primary save-button">@L("Save")</button>
+                <button type="button" class="btn btn-default close-button" data-dismiss="modal">@L("Cancel")</button>
+            </div>
+        </div>
+    </div>
+</div>

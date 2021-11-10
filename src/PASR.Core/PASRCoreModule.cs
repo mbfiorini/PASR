@@ -36,6 +36,7 @@ namespace PASR
             Configuration.Settings.Providers.Add<AppSettingProvider>();
             
             Configuration.Localization.Languages.Add(new LanguageInfo("fa", "فارسی", "famfamfam-flags ir"));
+            
         }
 
         public override void Initialize()

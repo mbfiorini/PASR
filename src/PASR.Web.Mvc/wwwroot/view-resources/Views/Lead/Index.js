@@ -1,18 +1,23 @@
-﻿(function ($) {
-    
+﻿(function ($) {    
     //#region variables
     var _leadService = abp.services.app.lead,
+        _callService = abp.services.app.call,
         l = abp.localization.getSource('PASR'),
         _$modal = $('#LeadCreateModal'),
-        _$modalEdit = $('#LeadEditModal'),
+        _$editModal = $('#LeadEditModal'),
         _$form = $('#leadCreateForm'),
         _$formEdit = $('#leadEditForm'),
         _$table = $('#LeadsTable'),
         _$uTable = $('#UsersTable'),
         _userService = abp.services.app.user,
-        _$userInput = _$modalEdit.find('[name="assignedUserName"]');
-    //#endregion
-    console.log(_$userInput);
+        _$userInput = _$editModal.find('[name="assignedUserName"]'),
+        _$callModal = $('#LeadCallModal'),
+        _$callForm = $('#callForm'),
+        _$callCountDown = $('#callCountdown'),
+        callStart,
+        callEnd,
+        callLeadId;
+    //#endregion    
 
     var _$leadsTable = _$table.DataTable({
         processing: true,
@@ -105,14 +110,24 @@
                 autoWidth: false,
                 defaultContent: '',
                 render: (data, type, row, meta) => {
-                    return [
-                        `   <button type="button" class="btn btn-sm bg-secondary edit-lead" data-lead-id="${row.id}" data-toggle="modal" data-target="#LeadEditModal">`,
-                        `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
-                        '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-danger delete-lead" data-lead-id="${row.id}" data-lead-name="${row.name}">`,
-                        `       <i class="fas fa-trash"></i> ${l('Delete')}`,
-                        '   </button>',
-                    ].join('');
+
+                    if (abp.auth.isGranted('Update.Leads')) {
+                        return [
+                            `   <button type="button" class="btn btn-sm bg-secondary edit-lead" data-lead-id="${row.id}" data-toggle="modal" data-target="#LeadEditModal">`,
+                            `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+                            '   </button>',
+                            `   <button type="button" class="btn btn-sm bg-danger delete-lead" data-lead-id="${row.id}" data-lead-name="${row.name}">`,
+                            `       <i class="fas fa-trash"></i> ${l('Delete')}`,
+                            '   </button>',
+                        ].join('');
+                    }else{
+                        return [
+                            `   <button type="button" class="btn btn-sm bg-primary call-lead" data-lead-id="${row.id}" data-lead-phone="${row.phoneNumber}" data-lead-name="${row.name}">`,
+                            `       <i class="fas fa-phone"></i> ${l('Call')}`,
+                            '   </button>'
+                        ].join('');
+                    }
+                    
                 }
             }
         ]
@@ -269,7 +284,7 @@
             });
     });
 
-    _$modalEdit.find('.save-button').on('click', (e) => {
+    _$editModal.find('.save-button').on('click', (e) => {
 
         e.preventDefault();
 
@@ -281,7 +296,7 @@
 
         debugger;
         
-        abp.ui.setBusy(_$modalEdit);
+        abp.ui.setBusy(_$editModal);
 
         var lead = _$formEdit.serializeFormToObject();
 
@@ -290,22 +305,157 @@
         _leadService
             .update(lead)
             .done(function () {
-                _$modalEdit.modal('hide');
+                _$editModal.modal('hide');
                 _$formEdit[0].reset();
                 abp.event.trigger('lead.edited',l('SavedSuccessfully'));
                 _$leadsTable.ajax.reload();
             })
             .always(function () {
-                abp.ui.clearBusy(_$modalEdit);
+                abp.ui.clearBusy(_$editModal);
             });
     });
 
     $(document).on('click', '.delete-lead', function () {
         var leadId = $(this).attr("data-lead-id");
         var leadName = $(this).attr('data-lead-name');
-
         deleteLead(leadId, leadName);
     });
+
+    $(document).on('click', '.call-lead', function () {
+
+        callLeadId = $(this).attr("data-lead-id");
+        let leadName = $(this).attr('data-lead-name');
+        let leadPhone = $(this).attr('data-lead-phone');
+
+        abp.message.confirm(
+            abp.utils.formatString(
+                l('AreYouSureWantToCallTo'),
+                leadName),
+            null,
+            (isConfirmed) => {
+                if (isConfirmed) {
+                    $('#LeadCallModal').find('.modal-title').html(`${l('Call')} ${leadName} - ${leadPhone}`);                    
+                    $('#LeadCallModal').modal('show');
+                    callStart = moment().format();
+                    //console.log("Inicio da ligação:", callStart);
+                }
+            }
+        );
+    });    
+    
+    //#region callWorkflow
+    $('#finishCall').on('click', function(e){
+        $(this).attr('disabled',true);
+        _$callCountDown.countdown('pause');
+        callEnd = moment().format();
+        //console.log("Fim da ligação:", callEnd);
+        //console.log(_$callCountDown.countdown('getTimes'));
+        $('#submitCallButton').show(0);
+        $('#significant').enableFormField(true).focus();
+    });
+
+    //Bootstraps the DatePicker for Date fields, with custom options
+    $(function () {
+        $(".datetime-picker").datetimepicker({
+            minDate:moment(),
+            locale:abp.localization.currentLanguage.name,
+            icons: {
+                time: "fa fa-clock",
+                date: "fa fa-calendar",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down"
+            }
+        });
+    });
+
+    //Logic for manipulating form fields depending on the answer chosen
+    $('#significant').change(function() {
+        let opt = $(this).children("option:selected").val();
+        switch (opt) {
+            case 'true':
+                $('#interest').enableFormField(true).focus();
+                $('#nextContact').disableFormField();
+                $('#resultReason').disableFormField();
+                $('#callNotes').disableFormField();
+                break;
+            case 'false':
+                $('#interest').disableFormField();
+                $('#scheduled').disableFormField();
+                $('#resultReason').enableFormField(true).focus();
+                $('#nextContact').enableFormField(true);
+                $('#callNotes').enableFormField().focus();
+                break;
+            default:
+                break;
+        }
+    });
+
+    $('#interest').change(function() {
+
+        let opt = $(this).children("option:selected").val();
+        switch (opt) {
+            case 'true':
+                $('#scheduled').enableFormField(true).focus();
+                $('#resultReason').disableFormField();
+                $('#callNotes').disableFormField();
+                break;
+            case 'false':
+                $('#scheduled').disableFormField();
+                $('#resultReason').enableFormField(true).focus();
+                $('#callNotes').enableFormField();
+                break;
+            default:
+                break;
+        }
+    });
+
+    $('#scheduled').change(function() {
+
+        let opt = $(this).children("option:selected").val();
+
+        switch (opt) {
+            case 'true':
+                $('#resultReason').enableFormField(true).focus();
+                $('#callNotes').enableFormField();
+                $('#nextContact').disableFormField();
+                break;
+            case 'false':
+                $('#resultReason').enableFormField(true).focus();
+                $('#callNotes').enableFormField();
+                $('#nextContact').enableFormField(true);
+                break;
+            default:
+                break;
+        }
+    });
+
+    $('#submitCallButton').on('click', (e) => {
+        
+        _$callForm.validate({ debug: true });
+        
+        if (!_$callForm.valid()) {
+            return;
+        }
+
+        //Take into the DTO only the enabled (visible) fields
+        var callDto = _$callForm.visibleFormToObject();
+
+        //Fills the DTO fields with call start and callend datetimes onto the 
+        callDto.callStartDateTime = callStart;
+        callDto.callEndDateTime = callEnd;        
+        callDto.leadId = callLeadId;
+
+        callDto.nextContact = $("#nextContact").data("DateTimePicker").viewDate().format();
+        console.log(callDto);
+        
+        _callService.create(callDto).done(() => {
+            abp.notify.info(l('CallSuccessfullyRegistered'));
+            _$callModal.modal('hide');
+            _$leadsTable.ajax.reload();
+        });
+        
+    });
+    //#endregion
 
     $(document).on('click', '.edit-lead', function (e) {
 
@@ -315,45 +465,7 @@
 
         _leadService.getLeadForEdit({id: leadId})
             .done(result => {
-                _$formEdit.jsonToForm(result.lead/* , {
-
-                    name: function (value) {
-                        $('[name="name"]').val(value);
-                    },
-                    lastName: function (value) {
-                        $('[name="lastName"]').val(value);
-                    },
-                    identityCode: function (value) {
-                        $('[name="identityCode"]').val(value);
-                    },
-                    emailAddress: function (value) {
-                        $('[name="emailAddress"]').val(value);
-                    },
-                    companyName: function (value) {
-                        $('[name="companyName"]').val(value);
-                    },
-                    phoneNumber: function (value) {
-                        $('[name="phoneNumber"]').val(value);
-                    },
-                    leadNotes: function (value) {
-                        $('[name="leadNotes"]').val(value);
-                    },
-                    assignedUser: function (value) {
-
-                        if (value) {
-                            $('[name="assignedUser"]').each(function() {$(this).val(value.fullName)} );
-                        } else {
-                            $('[name="assignedUser"]').each(function() {$(this).val('Undefined')} );
-                        };
-                    },
-                    priority: function (value) {
-                        $('[name="priority"]').val(value);
-                    },
-                    id: function (value) {
-                        $('[name="id"]').val(value);
-                    }
-                }*/);
-
+                _$formEdit.jsonToForm(result.lead);
             } )
             .catch(e => {
                 console.log(e);
@@ -391,14 +503,33 @@
     }).on('hidden.bs.modal', () => {
         _$form.clearForm();
     });
+    
+    _$editModal.on('shown.bs.modal', () => {
+        _$editModal.find('input:not([type=hidden]):first').focus();
+    }).on('hidden.bs.modal', () => {});
 
-    _$modalEdit.on('shown.bs.modal', () => {
-        _$modalEdit.find('input:not([type=hidden]):first').focus();
-    }).on('hidden.bs.modal', () => {
+    //Reset and fields 
+    _$callModal.on('show.bs.modal', () => {
 
+        //Empties the Form and Restart the Timer
+        _$callForm.clearForm().find('.form-group').hide(500).removeAttr("required");
+        
+        $('#submitCallButton').hide(0);
+        
+        _$callCountDown.countdown('destroy');
+
+
+        _$callCountDown.countdown({ since: 0, 
+                                    format: 'hMS', 
+                                    layout: '<b>{hnn}{sep}{mnn}{sep}{snn}</b>' 
+                                    });
+
+        $('#finishCall').removeAttr('disabled');
+
+    }).on('hidden.bs.modal', () => {        
     });
     //#endregion
-
+    
     $('.btn-search').on('click', (e) => {
         _$leadsTable.ajax.reload();
         _$usersTable.ajax.reload();
@@ -408,7 +539,7 @@
         if (e.which == 13) {
             _$leadsTable.ajax.reload();
             _$usersTable.ajax.reload();
-            return false;
+            return false;  
         }
     });
 })(jQuery);
