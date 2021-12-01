@@ -1,0 +1,85 @@
+﻿@using PASR.Web.Models.Common.Modals
+@using PASR.Web.Models.Leads
+@*@using PASR.Authorization*@
+
+@{ Layout = null; }
+<div class="modal fade" id="LeadEditModal" tabindex="-1" role="dialog" aria-labelledby="LeadEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditLead")))
+            <form id="leadEditForm" role="form" class="form-horizontal">
+                <input type="hidden" id="id" name="id" />
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" role="tab" href="#edit-lead-details">@L("LeadDetails")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" role="tab" href="#edit-lead-user">@L("AssignToUser")</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-4">
+                        <div role="tabpanel" class="tab-pane container active" id="edit-lead-details">
+                            <div class="form-group row required">
+                                <label for="leadname" class="col-md-3 col-form-label">@L("Name")</label>
+                                <div class="col-md-9">
+                                    <input id="leadname" type="text" class="form-control" name="name" required maxlength="@PASRConsts.MaxNamesLength">
+                                </div>
+                            </div>
+                            <div class="form-group row required">
+                                <label for="lastname" class="col-md-3 col-form-label">@L("Surname")</label>
+                                <div class="col-md-9">
+                                    <input id="lastname" type="text" class="form-control" name="lastName" required maxlength="@PASRConsts.MaxNamesLength">
+                                </div>
+                            </div>
+                            <div class="form-group row required">
+                                <label for="emailaddress" class="col-md-3 col-form-label">@L("EmailAddress")</label>
+                                <div class="col-md-9">
+                                    <input id="emailaddress" type="email" class="form-control" name="emailAddress" required maxlength="@PASRConsts.MaxEmailAddressLength">
+                                </div>
+                            </div>
+                            <div class="form-group row required">
+                                <label for="CompanyName" class="col-md-3 col-form-label">@L("Company")</label>
+                                <div class="col-md-9">
+                                    <input id="companyName" type="text" class="form-control" name="companyName" required maxlength="@PASRConsts.MaxNamesLength">
+                                </div>
+                            </div>
+                            <div class="form-group row required">
+                                <label for="identitycode" class="col-md-3 col-form-label">@L("IdentityCode")</label>
+                                <div class="col-md-9">
+                                    <input id="identitycode" type="text" class="form-control" name="identityCode" required maxlength="14" placeholder="999.999.999-99">
+                                </div>
+                            </div>
+                            <div class="form-group row required">
+                                <label for="phone" class="col-md-3 col-form-label">@L("PhoneNumber")</label>
+                                <div class="col-md-9">
+                                    <input id="phone" type="text" class="form-control" name="phoneNumber" required maxlength="14" placeholder="(99)99999-9999">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="assignedUser">@L("AssignedUser")</label>
+                                <input id="assignedUser" type="text" name="assignedUserName" class="form-control" value="Undefined" disabled>
+                            </div>
+                            <div class="form-group row justify-content-end required">
+                                <div class="col-md-3">
+                                    <label for="priority" class="col-12">@L("Priority")</label>
+                                    <select id="priority" class="form-control" name="priority" required>
+                                        <option value="0">@L("Max")</option>
+                                        <option value="1">@L("Average")</option>
+                                        <option value="2">@L("Min")</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane container" id="edit-lead-user">
+                            <partial name="_UserSelection" model="@Model" />
+                        </div>
+                    </div>
+                </div>
+                @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+            </form>
+            @* Cuidado com scripts repetidos na importação de ViewsParciais *@
+            @*<script src="~/view-resources/Views/Lead/_EditModal.js" asp-append-version="true"></script>*@
+        </div>
+    </div>
+</div>

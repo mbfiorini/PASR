@@ -22,7 +22,10 @@ namespace PASR.Teams.Dto
         [StringLength(200)]
         public string TeamDescription { get; set; }
 
-        public IList<UserDto> Users { get; set; }
+        public IList<UserDto> SDRs { get; set; }
+
+        [Required]
+        public UserDto SalesManager { get; set; }
 
         public GoalDto Goal { get; set; }
     }

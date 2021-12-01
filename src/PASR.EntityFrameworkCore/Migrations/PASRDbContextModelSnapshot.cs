@@ -1498,6 +1498,9 @@ namespace PASR.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("TenantId")
                         .HasColumnType("int");
 
@@ -1513,6 +1516,8 @@ namespace PASR.Migrations
                     b.HasIndex("DeleterUserId");
 
                     b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TenantId", "NormalizedEmailAddress");
 
@@ -1716,34 +1721,25 @@ namespace PASR.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("TeamDescription")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("TeamName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.Property<int>("TeamsId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UsersId")
+                    b.Property<long>("SalesManagerId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("TeamsId", "UsersId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("SalesManagerId")
+                        .IsUnique();
 
-                    b.ToTable("UserTeams");
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -1957,7 +1953,11 @@ namespace PASR.Migrations
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
-                    b.OwnsOne("Address", "Address", b1 =>
+                    b.HasOne("PASR.Teams.Team", "Team")
+                        .WithMany("SDRs")
+                        .HasForeignKey("TeamId");
+
+                    b.OwnsOne("PASR.Localization.Address", "Address", b1 =>
                         {
                             b1.Property<long>("UserId")
                                 .ValueGeneratedOnAdd()
@@ -2004,6 +2004,8 @@ namespace PASR.Migrations
                     b.Navigation("DeleterUser");
 
                     b.Navigation("LastModifierUser");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("PASR.Calls.Call", b =>
@@ -2031,9 +2033,9 @@ namespace PASR.Migrations
                         .WithMany("Leads")
                         .HasForeignKey("AssignedUserId");
 
-                    b.OwnsMany("Addresses", "Addresses", b1 =>
+                    b.OwnsOne("PASR.Localization.Address", "Address", b1 =>
                         {
-                            b1.Property<int>("Id")
+                            b1.Property<int>("LeadId")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("int")
                                 .UseIdentityColumn();
@@ -2053,9 +2055,6 @@ namespace PASR.Migrations
                                 .HasMaxLength(4)
                                 .HasColumnType("nvarchar(4)");
 
-                            b1.Property<int>("LeadId")
-                                .HasColumnType("int");
-
                             b1.Property<string>("Number")
                                 .IsRequired()
                                 .HasMaxLength(10)
@@ -2066,17 +2065,15 @@ namespace PASR.Migrations
                                 .HasMaxLength(200)
                                 .HasColumnType("nvarchar(200)");
 
-                            b1.HasKey("Id");
+                            b1.HasKey("LeadId");
 
-                            b1.HasIndex("LeadId");
-
-                            b1.ToTable("Addresses");
+                            b1.ToTable("Leads");
 
                             b1.WithOwner()
                                 .HasForeignKey("LeadId");
                         });
 
-                    b.Navigation("Addresses");
+                    b.Navigation("Address");
 
                     b.Navigation("AssignedUser");
                 });
@@ -2110,6 +2107,12 @@ namespace PASR.Migrations
 
             modelBuilder.Entity("PASR.Teams.Team", b =>
                 {
+                    b.HasOne("PASR.Authorization.Users.User", "SalesManager")
+                        .WithOne()
+                        .HasForeignKey("PASR.Teams.Team", "SalesManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsMany("PASR.Goals.Goal", "Goals", b1 =>
                         {
                             b1.Property<int>("TeamId")
@@ -2126,6 +2129,9 @@ namespace PASR.Migrations
                             b1.Property<DateTime>("EndDate")
                                 .HasColumnType("datetime2");
 
+                            b1.Property<bool>("IsActive")
+                                .HasColumnType("bit");
+
                             b1.Property<decimal>("Score")
                                 .HasColumnType("decimal(18,2)");
 
@@ -2136,28 +2142,13 @@ namespace PASR.Migrations
 
                             b1.ToTable("Goals");
 
-                            b1.WithOwner("Team")
+                            b1.WithOwner()
                                 .HasForeignKey("TeamId");
-
-                            b1.Navigation("Team");
                         });
 
                     b.Navigation("Goals");
-                });
 
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.HasOne("PASR.Teams.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PASR.Authorization.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("SalesManager");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -2238,6 +2229,11 @@ namespace PASR.Migrations
             modelBuilder.Entity("PASR.Leads.Lead", b =>
                 {
                     b.Navigation("Calls");
+                });
+
+            modelBuilder.Entity("PASR.Teams.Team", b =>
+                {
+                    b.Navigation("SDRs");
                 });
 #pragma warning restore 612, 618
         }

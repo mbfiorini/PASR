@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PASR.Application.Teams.Dto;
 using PASR.Teams.Dto;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ namespace PASR.Teams
         public TeamMapProfile()
         {
             CreateMap<CreateTeamDto, Team>();
+            
+            CreateMap<TeamDto, Team>().ReverseMap();
+
+            CreateMap<Team, TeamCardDto>()
+                .ForMember((tc) => tc.SdmUser,(opt) => opt.MapFrom((t) => t.SalesManager));
+
         }
         
     }

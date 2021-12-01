@@ -18,21 +18,23 @@ namespace PASR.Teams
 
         public Team(string teamName, string teamDescription)
         {
-            TeamName = teamName;
-            TeamDescription = teamDescription;
+            Name = teamName;
+            Description = teamDescription;
         }
 
         [Required]
         [StringLength(PASRConsts.MaxNamesLength)]
-        public string TeamName { get; set; }
+        public string Name { get; set; }
         
         [Required]
         [StringLength(1000)]
-        public string TeamDescription { get; set; }
+        public string Description { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        [Required]
+        public User SalesManager { get; set; }
 
-        public IEnumerable<Goal> Goals { get; set; }
+        public ICollection<User> SDRs { get; set; }
 
+        public ICollection<Goal> Goals { get; set; }
     }
 }

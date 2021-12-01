@@ -29,3 +29,11 @@ textarea {
     margin-right: 4px;
     margin-top: -4px;
 }
+
+.popover.action-list{
+    min-width: 130px;    
+}
+
+li.menu-action:hover {
+    cursor: pointer;
+}

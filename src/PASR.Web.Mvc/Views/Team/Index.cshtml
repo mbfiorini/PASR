@@ -1,0 +1,63 @@
+﻿@using PASR.Web.Startup
+@using System.Globalization
+@model PASR.Web.Models.Teams.TeamListViewModel
+@{ ViewBag.Title = L("Teams");
+   ViewBag.CurrentPageName = PageNames.Teams; }
+
+@section styles{
+    <link href="~/libs-ext/countdown/css/jquery.countdown.css" rel="stylesheet" asp-append-version="true" />
+
+    <environment names="Development">
+        <link href="~/libs-ext/datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="~/libs-ext/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+}
+
+@section scripts
+{
+    <environment names="Development">
+        <script src="~/libs-ext/shuffle/shuffle.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Team/Index.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/libs-ext/shuffle/shuffle.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Views/Team/Index.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <script src="~/libs-ext/datetimepicker/js/bootstrap-datetimepicker.min.js" asp-append-version="true"></script>
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>@L("Teams")</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content mt-4">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <a href="javascript:;" data-toggle="modal" data-target="#TeamCreateModal" class="btn bg-blue">
+                    <i class="fa fa-plus-square"></i>
+                    @L("Create")
+                </a>
+            </div>
+            <div class="col-sm-6">
+                @await Html.PartialAsync("~/Views/Team/Index.AdvancedSearch.cshtml")
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row team-shuffle mx-3">
+        <div class="col-sm-1 sizer-element"></div>
+    </div>
+</section>
+
+
+@await Html.PartialAsync("~/Views/Team/_CreateModal.cshtml", Model)
+@await Html.PartialAsync("~/Views/Team/_EditModal.cshtml", Model)

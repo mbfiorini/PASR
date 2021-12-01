@@ -11,21 +11,26 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace PASR.Calls
 {
     public class CallAppService : AsyncCrudAppService<Call,CallDto,int,PagedCallResultRequestDto,CreateCallDto,CallDto>
     {
         public IRepository<Lead> _leadRepository;
+        public IRepository<Call> _callRepository;
         private readonly UserStore _userStore;
 
         public CallAppService(
             IRepository<Call> repository,
             IRepository<Lead> leadRepository,
-            UserStore userStore) : base(repository)
+            UserStore userStore, 
+            IRepository<Call> callRepository) : base(repository)
         {
             _leadRepository = leadRepository;
             _userStore = userStore;
+            _callRepository = callRepository;
         }
 
         public async override Task<CallDto> CreateAsync(CreateCallDto createCallDto)
@@ -59,9 +64,27 @@ namespace PASR.Calls
             return base.DeleteAsync(input);
         }
 
-        public override Task<PagedResultDto<CallDto>> GetAllAsync(PagedCallResultRequestDto input)
+        public async override Task<PagedResultDto<CallDto>> GetAllAsync(PagedCallResultRequestDto input)
         {
-            return base.GetAllAsync(input);
+            if(input.Id == 0) throw new UserFriendlyException("Invalid 'Id' property passed as argument");
+            
+            IQueryable query = _callRepository
+                                   .GetAllIncluding(c => c.Lead, c => c.User)
+                                   .Where(c => c.Lead.Id == input.Id)
+                                   .Skip(input.SkipCount)
+                                   .Take(input.MaxResultCount);
+            
+            string exp =  query.ToQueryString();
+
+            //I used task run, because there is no AsyncMethod for GetAllIncluding
+            List<Call> Calls = await Task.Run(() => _callRepository
+                                                        .GetAllIncluding(c => c.Lead, c => c.User)
+                                                        .Where(c => c.Lead.Id == input.Id)
+                                                        .Skip(input.SkipCount)
+                                                        .Take(input.MaxResultCount).ToList());
+
+            return new PagedResultDto<CallDto>(Calls.Count,ObjectMapper.Map<List<CallDto>>(Calls));
+            
         }
 
         public override Task<CallDto> GetAsync(EntityDto<int> input)

@@ -58,7 +58,7 @@ namespace PASR.Web.Startup
                     new MenuItemDefinition(
                         PageNames.Teams,
                         L("Teams"),
-                        url: "Teams",
+                        url: "Team",
                         icon: "fas fa-user-friends",
                         order: 3
                     )
@@ -66,6 +66,7 @@ namespace PASR.Web.Startup
                     new MenuItemDefinition(
                         PageNames.Calls,
                         L("Calls"),
+                        url: "Call",
                         icon: "fas fa-phone",
                         order: 4
                     )

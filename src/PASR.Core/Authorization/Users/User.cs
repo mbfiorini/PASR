@@ -20,7 +20,7 @@ namespace PASR.Authorization.Users
 
         public Address Address { get; set; }
 
-        public ICollection<Team> Teams { get; set; } 
+        public Team Team { get; set; } 
 
         public static string CreateRandomPassword()
         {

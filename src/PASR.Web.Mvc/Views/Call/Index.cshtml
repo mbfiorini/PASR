@@ -1,8 +1,7 @@
 ﻿@using PASR.Web.Startup
 @using System.Globalization
-@model PASR.Web.Models.Leads.LeadListViewModel
-@{ ViewBag.Title = L("Leads");
-   ViewBag.CurrentPageName = PageNames.Leads; }
+@{ ViewBag.Title = L("Calls");
+   ViewBag.CurrentPageName = PageNames.Calls; }
 
 @section styles{
     <link href="~/libs-ext/countdown/css/jquery.countdown.css" rel="stylesheet" asp-append-version="true" />
@@ -39,7 +38,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                <h1>@L("Leads")</h1>
+                <h1>@L("Calls")</h1>
             </div>
             <div class="col-sm-6">
                 <a href="javascript:;" data-toggle="modal" data-target="#LeadCreateModal" class="btn bg-blue float-sm-right">
@@ -67,16 +66,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="leadsTable" class="table table-striped table-bordered">
+                            <table id="leadCallsTable" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th></th>
                                         <th>@L("Name")</th>
                                         <th>@L("Surname")</th>
-                                        <th>@L("PhoneNumber")</th>
-                                        <th>@L("EmailAddress")</th>
-                                        <th>@L("Priority")</th>
-                                        <th></th>
+                                        <th>@L("FirstContact")</th>
+                                        <th>@L("NextContact")</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,7 +86,3 @@
         </div>
     </div>
 </section>
-
-@await Html.PartialAsync("~/Views/Lead/_CreateModal.cshtml", Model)
-@await Html.PartialAsync("~/Views/Lead/_EditModal.cshtml", Model)
-@await Html.PartialAsync("~/Views/Lead/_CallModal.cshtml", Model)

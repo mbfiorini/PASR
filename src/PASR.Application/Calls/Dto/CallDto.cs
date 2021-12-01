@@ -34,6 +34,8 @@ namespace PASR.Calls.Dto
         public string CallNotes { get; set; }
 
         public bool Intersted { get; set; }
+
+        public string Duration { get; set; }
         
     }    
 }

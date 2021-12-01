@@ -8,7 +8,10 @@ namespace PASR.Calls.Dto
         {
             CreateMap<CreateCallDto,Call>();
 
-            CreateMap<Call,CallDto>().ReverseMap();
+            CreateMap<Call,CallDto>()
+                .ForMember(dto => dto.Duration, 
+                           opt => opt.MapFrom(c => c.GetTimeSpent().ToString("c")))
+                .ReverseMap();
         }
 
     }

@@ -10,8 +10,9 @@ namespace PASR.Users.Dto
             CreateMap<UserDto, User>();
             CreateMap<UserDto, User>()
                 .ForMember(x => x.Roles, opt => opt.Ignore())
-                .ForMember(x => x.Teams, opt => opt.Ignore())
-                .ForMember(x => x.CreationTime, opt => opt.Ignore());
+                .ForMember(x => x.Team, opt => opt.Ignore())
+                .ForMember(x => x.CreationTime, opt => opt.Ignore())
+                .ReverseMap();
 
             CreateMap<CreateUserDto, User>();
             CreateMap<CreateUserDto, User>().ForMember(x => x.Roles, opt => opt.Ignore());

@@ -35,21 +35,21 @@ namespace PASR.EntityFrameworkCore
                     .WithOne(l => l.AssignedUser)
                     .OnDelete(DeleteBehavior.ClientSetNull); //This implies that a Lead can have no Assigned User as well
 
-                u.OwnsOne("Address", 
-                          u => u.Address, 
+                u.OwnsOne(u => u.Address, 
                           a => 
                           {
-                              a.Property(a => a.Street).IsRequired();       //Rua (Endereço)
-                              a.Property(a => a.Number).IsRequired();       //Número
-                              a.Property(a => a.City).IsRequired();         //Cidade
-                              a.Property(a => a.District).IsRequired();     //Bairro
-                              a.Property(a => a.FederalUnity).IsRequired(); //UF
+                              a.WithOwner();
+                              
+                            //   a.Property(a => a.Street).IsRequired();       //Rua (Endereço)
+                            //   a.Property(a => a.Number).IsRequired();       //Número
+                            //   a.Property(a => a.City).IsRequired();         //Cidade
+                            //   a.Property(a => a.District).IsRequired();     //Bairro
+                            //   a.Property(a => a.FederalUnity).IsRequired(); //UF
                           });
 
-                //Shadow entity
-                u.HasMany(u => u.Teams).WithMany(t => t.Users).UsingEntity(ut => ut.ToTable("UserTeams"));
-
                 u.HasMany(u => u.Calls).WithOne(c => c.User);
+                // u.HasOne(u => u.Team).WithMany(t => t.SDRs);
+
             });
             
             modelBuilder.Entity<Lead>(l => 
@@ -60,16 +60,14 @@ namespace PASR.EntityFrameworkCore
 
                 l.HasIndex(l => l.IdentityCode).IsUnique();
 
-                l.OwnsMany("Addresses", l => l.Addresses,
-                          a => 
-                          {
-                              a.WithOwner().HasForeignKey("LeadId");
-                              a.HasKey("Id");
-                              a.Property(a => a.Street).IsRequired();       //Rua (Endereço)
-                              a.Property(a => a.Number).IsRequired();       //Número
-                              a.Property(a => a.City).IsRequired();         //Cidade
-                              a.Property(a => a.District).IsRequired();     //Bairro
-                              a.Property(a => a.FederalUnity).IsRequired(); //UF
+                l.OwnsOne(l => l.Address,
+                          a => {
+                              a.WithOwner();
+                            //   a.Property(a => a.Street).IsRequired();       //Rua (Endereço)
+                            //   a.Property(a => a.Number).IsRequired();       //Número
+                            //   a.Property(a => a.City).IsRequired();         //Cidade
+                            //   a.Property(a => a.District).IsRequired();     //Bairro
+                            //   a.Property(a => a.FederalUnity).IsRequired(); //UF
                           });
 
                 l.HasMany(l => l.Calls).WithOne(c => c.Lead);
@@ -94,8 +92,16 @@ namespace PASR.EntityFrameworkCore
             {
                 t.ToTable("Teams");
 
-                t.OwnsMany<Goal>(t => t.Goals).ToTable("Goals")
-                    .WithOwner(g => g.Team);
+                t.OwnsMany<Goal>(t => t.Goals, 
+                g => {
+                    g.WithOwner();
+                    g.ToTable("Goals");
+                    });
+
+                t.HasMany(t => t.SDRs).WithOne(u => u.Team).OnDelete(DeleteBehavior.ClientSetNull);
+
+                t.HasOne(t => t.SalesManager).WithOne().HasForeignKey(typeof(Team), "SalesManagerId");
+
             });
 
             base.OnModelCreating(modelBuilder);

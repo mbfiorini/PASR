@@ -44,10 +44,9 @@ namespace PASR.EntityFrameworkCore.Seed.Testing
                 _context.SaveChanges();
             }
 
-            if (lead.Addresses?.FirstOrDefault() == null)
+            if (lead.Address == null)
             {   
-                lead.Addresses = new List<Address>();
-                lead.Addresses.Add(new Address("Rua 12 de Outubro", "40", "Vila Rami", "Jundiaí", "SP"));
+                lead.Address = new Address("Rua 12 de Outubro", "40", "Vila Rami", "Jundiaí", "SP");
             }
 
             _context.SaveChanges();

@@ -166,6 +166,6 @@
         });
         $this[0].reset();
         return $this;
-    };
+    };    
 
 })(jQuery);

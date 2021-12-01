@@ -1,8 +1,8 @@
 ﻿var abp = abp || {};
-(function () {
+(function ($) {
     if (!$.fn.dataTable) {
         return;
-    }
+    }    
 
     abp.libs = abp.libs || {};
     var l = abp.localization.getSource("PASR");
@@ -17,7 +17,7 @@
         lengthMenu: "Show _MENU_ entries",
         loadingRecords: "Loading...",
         processing: '<i class="fas fa-refresh fa-spin"></i>',
-        search: "Search:",
+        search: `${l('Search')}:"`,
         zeroRecords: "No matching records found",
         paginate: {
             first: '<i class="fas fa-angle-double-left"></i>',
@@ -49,4 +49,30 @@
             ">"
         ].join('')
     });
-})();
+
+    $.fn.createChildTable = function (row) {
+            
+        var table = $('<table class="display" width="100%" id="callsTable"/>');
+
+        // Display it the child row
+        row.child(table).show();
+
+        return table;
+             
+    };
+    $.fn.destroyChildTable = function (row) {
+        var table = $("table", row.child());
+        table.detach();
+        table.DataTable().destroy();
+     
+        // And then hide the row
+        row.child.hide();
+
+        return $(this);
+    };
+
+    $.fn.updateChild = function ( row ) {
+        $('table', row.child()).DataTable().ajax.reload();
+    };
+
+})(jQuery);

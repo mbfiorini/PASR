@@ -24,7 +24,8 @@
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
-            }
+            },
+            "targetOutputLogPath": "${workspaceFolder}/outLog.txt"
         },
         {
             "name": ".NET Core Attach",

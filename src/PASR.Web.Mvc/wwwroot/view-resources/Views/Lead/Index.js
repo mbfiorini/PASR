@@ -1,4 +1,4 @@
-﻿(function ($) {    
+﻿(function ($) {
     //#region variables
     var _leadService = abp.services.app.lead,
         _callService = abp.services.app.call,
@@ -7,7 +7,7 @@
         _$editModal = $('#LeadEditModal'),
         _$form = $('#leadCreateForm'),
         _$formEdit = $('#leadEditForm'),
-        _$table = $('#LeadsTable'),
+        _$table = $('#leadsTable'),
         _$uTable = $('#UsersTable'),
         _userService = abp.services.app.user,
         _$userInput = _$editModal.find('[name="assignedUserName"]'),
@@ -28,7 +28,6 @@
             var filter = $('#LeadsSearchForm').serializeFormToObject(true);
             filter.maxResultCount = data.length;
             filter.skipCount = data.start;
-
             abp.ui.setBusy(_$table);
             _leadService.getAll(filter).done(function (result) {
                 callback({
@@ -41,6 +40,7 @@
                 abp.ui.clearBusy(_$table);
             });
         },
+        rowId: 'id',
         buttons: [
             {
                 name: 'refresh',
@@ -50,14 +50,16 @@
         ],
         responsive: {
             details: {
-                type: 'column'
+                type: 'column',
+                target: -1
             }
         },
         columnDefs: [
             {
                 targets: 0,
-                className: 'control',
-                defaultContent: '',
+                className: 'details-control',
+                defaultContent: '<i class="fas fa-chevron-down"></i>',
+                orderable: false
             },
             {
                 targets: 1,
@@ -120,17 +122,117 @@
                             `       <i class="fas fa-trash"></i> ${l('Delete')}`,
                             '   </button>',
                         ].join('');
-                    }else{
+                    } else {
                         return [
                             `   <button type="button" class="btn btn-sm bg-primary call-lead" data-lead-id="${row.id}" data-lead-phone="${row.phoneNumber}" data-lead-name="${row.name}">`,
                             `       <i class="fas fa-phone"></i> ${l('Call')}`,
                             '   </button>'
                         ].join('');
                     }
-                    
+
                 }
+            },
+            {
+                targets: 7,
+                className: 'control',
+                defaultContent: ''
             }
         ]
+    });
+
+    $('#leadsTable tbody').on('click', 'td.details-control', function () {
+
+        let tr = $(this).closest('tr');
+        let row = _$leadsTable.row(tr);
+
+        if (row.child.isShown()) {
+
+            // This row is already open - close it
+            tr.destroyChildTable(row);
+            tr.removeClass('shown');
+            $(this).find('i').toggleClass('fa-flip-vertical');
+
+        } else {
+            // Open this row
+            _$callsTable = tr.createChildTable(row);
+
+            // tr.addClass('shown');
+            let chevron = $(this).find('i');
+
+            chevron.toggleClass('fa-flip-vertical');
+
+            // This is the table we'll convert into a DataTable
+            _$callsTable.DataTable({
+                processing: false,
+                serverSide: true,
+                dom: 't',
+                ordering: false,
+                sortable: false,
+                ajax: function (data, callback, settings) {
+                    var filter = filter || {};
+                    filter.id = row.id();
+                    filter.maxResultCount = data.length;
+                    filter.skipCount = data.start;
+                    abp.ui.setBusy(_$callsTable);
+
+                    _callService.getAll(filter)
+                        .done(function (result) {
+                            console.log(result);
+                            callback({ data: result.items });
+                        })
+                        .always(function (data) {
+                            console.log(data);
+                            abp.ui.clearBusy(_$callsTable);
+                        });
+                },
+                rowId: 'id',
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: -1
+                    }
+                },
+                columnDefs: [
+                    {
+                        title: l('User'),
+                        targets: 0,
+                        data: 'user.userName'
+                    },
+                    {
+                        title: l('Start'),
+                        targets: 1,
+                        data: 'callStartDateTime',
+                        render: (data, type, row, meta) => {
+                            return moment(data).format();
+                        }
+                    },
+                    {
+                        title: l('Duration'),
+                        targets: 2,
+                        data: 'duration'
+
+                    },
+                    {
+                        title: l('CallResult'),
+                        targets: 3,
+                        data: 'callResult',
+                        render: (data, type, row, meta) => pasr.maps.callResult[data]
+                    },
+                    {
+                        title: l('ResultReason'),
+                        targets: 4,
+                        data: 'resultReason',
+                        render: (data, type, row, meta) => pasr.maps.resultReason[data]
+                    },
+                    {
+                        title: '',
+                        className: 'control',
+                        targets: 5,
+                        data: null,
+                    }
+                ]
+            });
+        }
     });
 
     var _$usersTable = _$uTable.DataTable({
@@ -244,7 +346,7 @@
     abp.event.on('user.assigned', (data) => {
         console.log('UserAssigned: ', data);
         console.log(_$userInput);
-        _$userInput.each(function() { $(this).val(data.fullName) } );
+        _$userInput.each(function () { $(this).val(data.fullName) });
         _$usersTable.ajax.reload();
     });
 
@@ -295,7 +397,7 @@
         }
 
         debugger;
-        
+
         abp.ui.setBusy(_$editModal);
 
         var lead = _$formEdit.serializeFormToObject();
@@ -307,7 +409,7 @@
             .done(function () {
                 _$editModal.modal('hide');
                 _$formEdit[0].reset();
-                abp.event.trigger('lead.edited',l('SavedSuccessfully'));
+                abp.event.trigger('lead.edited', l('SavedSuccessfully'));
                 _$leadsTable.ajax.reload();
             })
             .always(function () {
@@ -334,18 +436,18 @@
             null,
             (isConfirmed) => {
                 if (isConfirmed) {
-                    $('#LeadCallModal').find('.modal-title').html(`${l('Call')} ${leadName} - ${leadPhone}`);                    
+                    $('#LeadCallModal').find('.modal-title').html(`${l('Call')} ${leadName} - ${leadPhone}`);
                     $('#LeadCallModal').modal('show');
                     callStart = moment().format();
                     //console.log("Inicio da ligação:", callStart);
                 }
             }
         );
-    });    
-    
+    });
+
     //#region callWorkflow
-    $('#finishCall').on('click', function(e){
-        $(this).attr('disabled',true);
+    $('#finishCall').on('click', function (e) {
+        $(this).attr('disabled', true);
         _$callCountDown.countdown('pause');
         callEnd = moment().format();
         //console.log("Fim da ligação:", callEnd);
@@ -357,8 +459,8 @@
     //Bootstraps the DatePicker for Date fields, with custom options
     $(function () {
         $(".datetime-picker").datetimepicker({
-            minDate:moment(),
-            locale:abp.localization.currentLanguage.name,
+            minDate: moment(),
+            locale: abp.localization.currentLanguage.name,
             icons: {
                 time: "fa fa-clock",
                 date: "fa fa-calendar",
@@ -369,7 +471,7 @@
     });
 
     //Logic for manipulating form fields depending on the answer chosen
-    $('#significant').change(function() {
+    $('#significant').change(function () {
         let opt = $(this).children("option:selected").val();
         switch (opt) {
             case 'true':
@@ -390,7 +492,7 @@
         }
     });
 
-    $('#interest').change(function() {
+    $('#interest').change(function () {
 
         let opt = $(this).children("option:selected").val();
         switch (opt) {
@@ -409,7 +511,7 @@
         }
     });
 
-    $('#scheduled').change(function() {
+    $('#scheduled').change(function () {
 
         let opt = $(this).children("option:selected").val();
 
@@ -430,9 +532,9 @@
     });
 
     $('#submitCallButton').on('click', (e) => {
-        
+
         _$callForm.validate({ debug: true });
-        
+
         if (!_$callForm.valid()) {
             return;
         }
@@ -442,18 +544,18 @@
 
         //Fills the DTO fields with call start and callend datetimes onto the 
         callDto.callStartDateTime = callStart;
-        callDto.callEndDateTime = callEnd;        
+        callDto.callEndDateTime = callEnd;
         callDto.leadId = callLeadId;
 
         callDto.nextContact = $("#nextContact").data("DateTimePicker").viewDate().format();
         console.log(callDto);
-        
+
         _callService.create(callDto).done(() => {
             abp.notify.info(l('CallSuccessfullyRegistered'));
             _$callModal.modal('hide');
             _$leadsTable.ajax.reload();
         });
-        
+
     });
     //#endregion
 
@@ -463,10 +565,10 @@
 
         e.preventDefault();
 
-        _leadService.getLeadForEdit({id: leadId})
+        _leadService.getLeadForEdit({ id: leadId })
             .done(result => {
                 _$formEdit.jsonToForm(result.lead);
-            } )
+            })
             .catch(e => {
                 console.log(e);
                 throw new Error('Ocorreu um erro no servidor!');
@@ -497,39 +599,42 @@
         );
     };
 
+
     //#region model default focus input events
     _$modal.on('shown.bs.modal', () => {
         _$modal.find('input:not([type=hidden]):first').focus();
     }).on('hidden.bs.modal', () => {
         _$form.clearForm();
     });
-    
+
     _$editModal.on('shown.bs.modal', () => {
         _$editModal.find('input:not([type=hidden]):first').focus();
-    }).on('hidden.bs.modal', () => {});
+    }).on('hidden.bs.modal', () => { });
 
     //Reset and fields 
     _$callModal.on('show.bs.modal', () => {
 
         //Empties the Form and Restart the Timer
         _$callForm.clearForm().find('.form-group').hide(500).removeAttr("required");
-        
+
         $('#submitCallButton').hide(0);
-        
+
         _$callCountDown.countdown('destroy');
 
 
-        _$callCountDown.countdown({ since: 0, 
-                                    format: 'hMS', 
-                                    layout: '<b>{hnn}{sep}{mnn}{sep}{snn}</b>' 
-                                    });
+        _$callCountDown.countdown({
+            since: 0,
+            format: 'hMS',
+            layout: '<b>{hnn}{sep}{mnn}{sep}{snn}</b>'
+        });
 
         $('#finishCall').removeAttr('disabled');
 
-    }).on('hidden.bs.modal', () => {        
+    }).on('hidden.bs.modal', () => {
     });
     //#endregion
-    
+
+    //#region search field behavior
     $('.btn-search').on('click', (e) => {
         _$leadsTable.ajax.reload();
         _$usersTable.ajax.reload();
@@ -539,7 +644,8 @@
         if (e.which == 13) {
             _$leadsTable.ajax.reload();
             _$usersTable.ajax.reload();
-            return false;  
+            return false;
         }
     });
+    //#endregion
 })(jQuery);

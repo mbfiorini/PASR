@@ -10,5 +10,8 @@ namespace PASR.Calls.Dto
     public class PagedCallResultRequestDto : PagedResultRequestDto
     {
         public string Keyword { get; set; }
+        
+        public int Id { get; set; }
+
     }
 }

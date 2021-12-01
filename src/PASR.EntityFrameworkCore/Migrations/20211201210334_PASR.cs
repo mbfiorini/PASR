@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PASR.Migrations
 {
-    public partial class PASR_20211030 : Migration
+    public partial class PASR : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,6 +42,12 @@ namespace PASR.Migrations
                 maxLength: 200,
                 nullable: true);
 
+            migrationBuilder.AddColumn<int>(
+                name: "TeamId",
+                table: "AbpUsers",
+                type: "int",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Leads",
                 columns: table => new
@@ -56,6 +62,11 @@ namespace PASR.Migrations
                     AssignedUserId = table.Column<long>(type: "bigint", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     LeadNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Address_Number = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Address_District = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    Address_City = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    Address_FederalUnity = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     FirstContact = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NextContact = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -84,34 +95,17 @@ namespace PASR.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TeamName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    TeamDescription = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    SalesManagerId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Teams", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Number = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    District = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    City = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    FederalUnity = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
-                    LeadId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_Leads_LeadId",
-                        column: x => x.LeadId,
-                        principalTable: "Leads",
+                        name: "FK_Teams_AbpUsers_SalesManagerId",
+                        column: x => x.SalesManagerId,
+                        principalTable: "AbpUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -128,7 +122,8 @@ namespace PASR.Migrations
                     CallEndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CallResult = table.Column<int>(type: "int", nullable: false),
                     ResultReason = table.Column<int>(type: "int", nullable: false),
-                    CallNotes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CallNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Intersted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -157,7 +152,8 @@ namespace PASR.Migrations
                     Score = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CurrentScore = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    CurrentScore = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -170,34 +166,10 @@ namespace PASR.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "UserTeams",
-                columns: table => new
-                {
-                    TeamsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserTeams", x => new { x.TeamsId, x.UsersId });
-                    table.ForeignKey(
-                        name: "FK_UserTeams_AbpUsers_UsersId",
-                        column: x => x.UsersId,
-                        principalTable: "AbpUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserTeams_Teams_TeamsId",
-                        column: x => x.TeamsId,
-                        principalTable: "Teams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_LeadId",
-                table: "Addresses",
-                column: "LeadId");
+                name: "IX_AbpUsers_TeamId",
+                table: "AbpUsers",
+                column: "TeamId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Calls_LeadId",
@@ -221,15 +193,25 @@ namespace PASR.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTeams_UsersId",
-                table: "UserTeams",
-                column: "UsersId");
+                name: "IX_Teams_SalesManagerId",
+                table: "Teams",
+                column: "SalesManagerId",
+                unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AbpUsers_Teams_TeamId",
+                table: "AbpUsers",
+                column: "TeamId",
+                principalTable: "Teams",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Addresses");
+            migrationBuilder.DropForeignKey(
+                name: "FK_AbpUsers_Teams_TeamId",
+                table: "AbpUsers");
 
             migrationBuilder.DropTable(
                 name: "Calls");
@@ -238,13 +220,14 @@ namespace PASR.Migrations
                 name: "Goals");
 
             migrationBuilder.DropTable(
-                name: "UserTeams");
-
-            migrationBuilder.DropTable(
                 name: "Leads");
 
             migrationBuilder.DropTable(
                 name: "Teams");
+
+            migrationBuilder.DropIndex(
+                name: "IX_AbpUsers_TeamId",
+                table: "AbpUsers");
 
             migrationBuilder.DropColumn(
                 name: "Address_City",
@@ -264,6 +247,10 @@ namespace PASR.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Address_Street",
+                table: "AbpUsers");
+
+            migrationBuilder.DropColumn(
+                name: "TeamId",
                 table: "AbpUsers");
         }
     }

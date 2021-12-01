@@ -59,7 +59,7 @@ namespace PASR.Leads
         [MaxLength]
         public string LeadNotes { get; set; }
 
-        public ICollection<Address> Addresses { get; set; }
+        public Address Address { get; set; }
 
         [Required]
         [EnumDataType(typeof(LeadPriority))]
