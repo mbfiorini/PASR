@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PASR.Authorization.Roles;
 using PASR.Calls;
 using PASR.Leads;
 using PASR.Localization;
+using PASR.Teams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,7 @@ namespace PASR.EntityFrameworkCore.Seed.Testing
     internal class DefultWorkflowBuilder
     {
         private readonly PASRDbContext _context;
+
         public DefultWorkflowBuilder(PASRDbContext context)
         {
             _context = context;
@@ -22,6 +25,7 @@ namespace PASR.EntityFrameworkCore.Seed.Testing
         
             CreateLead();
             CreateCall();
+            CreateTeam();
         
         }
 
@@ -81,35 +85,29 @@ namespace PASR.EntityFrameworkCore.Seed.Testing
 
             _context.SaveChanges();
         }
+        
 
-        // void CreateTeam()
-        // {
-        //     //Leads
-        //     var Team = _context.Teams.IgnoreQueryFilters().FirstOrDefault(t => t.TeamName == "TeamMath");
+        void CreateTeam()
+        {
+            // var sdmRoleId = _roleManager.GetRoleByName("SDM")?.Id;
+            //Leads
+            var team = _context.Teams.IgnoreQueryFilters().FirstOrDefault(t => t.Name == "Team1");
 
-        //     var SDRRoleId = _context.Roles.FirstOrDefault(r => r.Name == "admin")?.Id;
+            var sdmRoleId = _context.Roles.FirstOrDefault(r => r.Name == "SDM")?.Id;
 
-        //     var user = _context.Users
-        //                     .IgnoreQueryFilters()
-        //                     .FirstOrDefault(u => u.Roles
-        //                         .Any(r => 
-        //                             r.Id == adminRoleId));
+            var user = _context.Users
+                            .IgnoreQueryFilters()
+                            .FirstOrDefault(u => u.Roles.Any(r => 
+                                    r.Id == sdmRoleId));
 
-        //     if (lead != null && user != null)
-        //     {
-        //         var call = new Call(user, 
-        //                             lead, 
-        //                             DateTime.Today, 
-        //                             DateTime.Now,
-        //                             CallResult.ScheduledMeeting,
-        //                             ResultReason.Necessity);
+            if (team == null && user != null)
+            {
+                var team1 = new Team("Team1","Test Team, only for fun", user);
                 
-        //         call.CallNotes = "Reunião Agendada";
+                _context.Teams.Add(team1);
+            }
 
-        //         _context.Calls.Add(call);
-        //     }
-
-        //     _context.SaveChanges();
-        // }
+            _context.SaveChanges();
+        }
     }
 }

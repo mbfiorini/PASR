@@ -13,7 +13,7 @@ namespace PASR.Web.Startup
         public override void SetNavigation(INavigationProviderContext context)
         {
             context.Manager.MainMenu
-                .AddItem(
+                /* .AddItem(
                     new MenuItemDefinition(
                         PageNames.Home,
                         L("HomePage"),
@@ -22,7 +22,7 @@ namespace PASR.Web.Startup
                         requiresAuthentication: true,
                         order: 0
                     )
-                ).AddItem(
+                ) */.AddItem(
                     new MenuItemDefinition(
                         PageNames.Administration,
                         L("Administration"),
@@ -62,7 +62,7 @@ namespace PASR.Web.Startup
                         icon: "fas fa-user-friends",
                         order: 3
                     )
-                ).AddItem( // Menu items below is just for demonstration!
+                )/* .AddItem( // Menu items below is just for demonstration!
                     new MenuItemDefinition(
                         PageNames.Calls,
                         L("Calls"),
@@ -70,7 +70,7 @@ namespace PASR.Web.Startup
                         icon: "fas fa-phone",
                         order: 4
                     )
-                );
+                ) */;
         }
 
         private static ILocalizableString L(string name)

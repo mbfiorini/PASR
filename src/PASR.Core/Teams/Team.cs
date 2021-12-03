@@ -16,10 +16,11 @@ namespace PASR.Teams
         protected Team()
         {}
 
-        public Team(string teamName, string teamDescription)
+        public Team(string name, string description, User salesManager)
         {
-            Name = teamName;
-            Description = teamDescription;
+            Name = name;
+            Description = description;
+            SalesManager = salesManager;
         }
 
         [Required]

@@ -93,14 +93,16 @@ namespace PASR.EntityFrameworkCore
                 t.ToTable("Teams");
 
                 t.OwnsMany<Goal>(t => t.Goals, 
-                g => {
-                    g.WithOwner();
-                    g.ToTable("Goals");
-                    });
+                g => {g.WithOwner();
+                      g.ToTable("Goals");});
 
-                t.HasMany(t => t.SDRs).WithOne(u => u.Team).OnDelete(DeleteBehavior.ClientSetNull);
+                t.HasMany(t => t.SDRs)
+                 .WithOne(u => u.Team)
+                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-                t.HasOne(t => t.SalesManager).WithOne().HasForeignKey(typeof(Team), "SalesManagerId");
+                t.HasOne(t => t.SalesManager)
+                 .WithOne()
+                 .HasForeignKey(typeof(Team), "SalesManagerId");
 
             });
 

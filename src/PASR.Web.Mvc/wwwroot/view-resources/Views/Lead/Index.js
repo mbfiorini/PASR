@@ -164,27 +164,111 @@
             // This is the table we'll convert into a DataTable
             _$callsTable.DataTable({
                 processing: false,
-                serverSide: true,
+                serverSide: false,
                 dom: 't',
                 ordering: false,
                 sortable: false,
-                ajax: function (data, callback, settings) {
-                    var filter = filter || {};
-                    filter.id = row.id();
-                    filter.maxResultCount = data.length;
-                    filter.skipCount = data.start;
-                    abp.ui.setBusy(_$callsTable);
+                data: [
+                    {
+                        "user": {
+                            "userName": "Luisito",
+                            "name": "Luis Roberto",
+                            "surname": "Araújo",
+                            "emailAddress": "lr@gmail.com",
+                            "isActive": true,
+                            "fullName": "Luis Roberto Araújo",
+                            "lastLoginTime": null,
+                            "creationTime": "2021-12-01T22:57:48.027828-03:00",
+                            "roleNames": null,
+                            "teamNames": null,
+                            "id": 3
+                        },
+                        "lead": {
+                            "name": "Matheus",
+                            "lastName": "Fiorini",
+                            "phoneNumber": "(11)99890-8899",
+                            "identityCode": "48291929840",
+                            "companyName": "Geniality",
+                            "emailAddress": "matheus.bf.dosanjos@gmail.com",
+                            "leadNotes": null,
+                            "assignedUserName": "admin",
+                            "lastModificationTime": "2021-12-01T22:54:43.2496919-03:00",
+                            "creationTime": "0001-01-01T00:00:00-02:00",
+                            "priority": 0,
+                            "status": 0,
+                            "firstContact": "0001-01-01T00:00:00-02:00",
+                            "nextContact": "0001-01-01T00:00:00-02:00",
+                            "addresses": null,
+                            "id": 1
+                        },
+                        "callStartDateTime": "2021-12-01T22:58:47-03:00",
+                        "callEndDateTime": "2021-12-01T22:58:53-03:00",
+                        "callResult": 0,
+                        "resultReason": 0,
+                        "callNotes": "Ausente, reagendado para amanhã",
+                        "intersted": false,
+                        "duration": "00:00:06",
+                        "id": 4
+                    },
+                    {
+                        "user": {
+                            "userName": "Luisito",
+                            "name": "Luis Roberto",
+                            "surname": "Araújo",
+                            "emailAddress": "lr@gmail.com",
+                            "isActive": true,
+                            "fullName": "Luis Roberto Araújo",
+                            "lastLoginTime": null,
+                            "creationTime": "2021-12-01T22:57:48.027828-03:00",
+                            "roleNames": null,
+                            "teamNames": null,
+                            "id": 3
+                        },
+                        "lead": {
+                            "name": "Matheus",
+                            "lastName": "Fiorini",
+                            "phoneNumber": "(11)99890-8899",
+                            "identityCode": "48291929840",
+                            "companyName": "Geniality",
+                            "emailAddress": "matheus.bf.dosanjos@gmail.com",
+                            "leadNotes": null,
+                            "assignedUserName": "admin",
+                            "lastModificationTime": "2021-12-01T22:54:43.2496919-03:00",
+                            "creationTime": "0001-01-01T00:00:00-02:00",
+                            "priority": 0,
+                            "status": 0,
+                            "firstContact": "0001-01-01T00:00:00-02:00",
+                            "nextContact": "0001-01-01T00:00:00-02:00",
+                            "addresses": null,
+                            "id": 1
+                        },
+                        "callStartDateTime": "2021-12-02T18:25:22-03:00",
+                        "callEndDateTime": "2021-12-02T18:31:43-03:00",
+                        "callResult": 2,
+                        "resultReason": 5,
+                        "callNotes": "Cliente gostou do produto oferecido, quer agendei uma reunião para apresentação no dia 05/01/2022.",
+                        "intersted": false,
+                        "duration": "00:06:21",
+                        "id": 8
+                    }
+                ],
+                // ajax: function (data, callback, settings) {
+                //     var filter = filter || {};
+                //     filter.id = row.id();
+                //     filter.maxResultCount = data.length;
+                //     filter.skipCount = data.start;
+                //     abp.ui.setBusy(_$callsTable);
 
-                    _callService.getAll(filter)
-                        .done(function (result) {
-                            console.log(result);
-                            callback({ data: result.items });
-                        })
-                        .always(function (data) {
-                            console.log(data);
-                            abp.ui.clearBusy(_$callsTable);
-                        });
-                },
+                //     _callService.getAll(filter)
+                //         .done(function (result) {
+                //             console.log(result);
+                //             callback({ data: result.items });
+                //         })
+                //         .always(function (data) {
+                //             console.log(data);
+                //             abp.ui.clearBusy(_$callsTable);
+                //         });
+                // },
                 rowId: 'id',
                 responsive: {
                     details: {

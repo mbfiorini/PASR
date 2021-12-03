@@ -103,7 +103,7 @@ namespace PASR.Web.Startup
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<AbpCommonHub>("/signalr");
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller=Lead}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("defaultWithArea", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
             });
         }
